@@ -197,30 +197,39 @@
         </div>
     </header>
 
-    <!-- Alerta flutuante genérico (Pix ou Avisos do Mural) -->
+    <!-- Alerta flutuante genérico -->
     <div id="toast-pix" class="fixed top-3 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2 z-50">
         <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
     </div>
 
-    <!-- MODAL DE SAUDAÇÃO (COM O AVISO "feche vídeo" AO LADO DO X) -->
+    <!-- MODAL DE SAUDAÇÃO COM MENSAGEM E BOTÃO DE FECHAR BLOQUEADO ATÉ O FIM -->
     <div id="modal-saudacao" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3">
-        <div class="bg-gray-900 border-2 border-yellow-400 w-full max-w-2xl rounded-2xl p-4 shadow-2xl relative flex flex-col items-center">
+        <div class="bg-gray-900 border-2 border-yellow-400 w-full max-w-xl rounded-2xl p-4 shadow-2xl relative flex flex-col items-center">
             
-            <!-- Botão de Fechar com a frase "feche vídeo" ao lado -->
-            <div class="absolute top-3 right-3 flex items-center gap-2 z-10">
+            <!-- Aviso e Botão de Fechar (inicialmente oculto ou travado até o vídeo acabar) -->
+            <div id="container-botao-fechar" class="absolute top-3 right-3 hidden items-center gap-2 z-10">
                 <span class="text-[11px] text-yellow-300 font-bold bg-black/60 px-2 py-1 rounded-lg border border-yellow-400/40 animate-pulse">feche vídeo</span>
                 <button onclick="fecharModalSaudacao()" class="bg-red-700 hover:bg-red-800 text-white w-8 h-8 rounded-full font-bold flex items-center justify-center shadow transition text-sm">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <h2 class="text-sm md:text-base font-black text-yellow-300 mb-2 text-center flex items-center gap-2 pr-24">
-                <i class="fa-solid fa-dove"></i> Vídeo de Boas-Vindas - Ministério REAJ
-            </h2>
-            <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black border border-yellow-500/50 mb-3">
-                <iframe id="iframe-saudacao" class="absolute top-0 left-0 w-full h-full" src="" title="Vídeo de Boas-Vindas" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <!-- MENSAGEM SOLICITADA -->
+            <div id="aviso-comunicado" class="w-full bg-yellow-400/20 border border-yellow-400/50 rounded-xl p-2 mb-2 text-center">
+                <p class="text-xs md:text-sm font-black text-yellow-300 animate-pulse">
+                    <i class="fa-solid fa-bullhorn mr-1"></i> Aguarde... Temos um comunicado e boas vindas!
+                </p>
             </div>
-            <button onclick="fecharModalSaudacao()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-black rounded-xl shadow transition text-xs">
+
+            <h2 class="text-xs md:text-sm font-bold text-gray-300 mb-2 text-center flex items-center gap-1.5">
+                <i class="fa-solid fa-dove text-yellow-400"></i> Ministério REAJ — Assista até o final para prosseguir
+            </h2>
+
+            <div class="relative w-full aspect-[9/16] max-h-[55vh] rounded-xl overflow-hidden shadow-2xl bg-black border border-yellow-500/50 mb-3 flex items-center justify-center">
+                <div id="player-youtube-saudacao" class="w-full h-full"></div>
+            </div>
+
+            <button id="btn-continuar-site" onclick="fecharModalSaudacao()" class="hidden w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-black rounded-xl shadow transition text-xs">
                 Continuar para o Site
             </button>
         </div>
@@ -229,7 +238,7 @@
     <!-- Conteúdo Principal Centralizado -->
     <main class="container mx-auto px-2 py-1 flex-grow flex flex-col items-center justify-center z-10 max-w-4xl space-y-2 overflow-hidden">
         
-        <!-- LETREIRO: ELE VIVE! COM ESPADA E SANGUE -->
+        <!-- LETREIRO: ELE VIVE! -->
         <div class="w-full max-w-md bg-black/40 backdrop-blur-md border border-yellow-300/60 rounded-xl overflow-hidden py-1 shadow-md shrink-0">
             <div class="overflow-hidden whitespace-nowrap">
                 <span class="animate-marquee text-yellow-300 font-black text-xs md:text-sm tracking-widest uppercase drop-shadow">
@@ -238,41 +247,36 @@
             </div>
         </div>
 
-        <!-- BOTÕES DO TOPO (Regulamento, Hierarquia, Fotos, Áudio, Panfletos em Branco Gradiente) -->
+        <!-- BOTÕES DO TOPO -->
         <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
-            <!-- 1. Amarelo -->
-            <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
+            <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
                     <i class="fa-solid fa-book-open text-white text-[10px]"></i>
                 </div>
                 <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Regulamento</span>
             </button>
 
-            <!-- 2. Verde -->
-            <button onclick="abrirSecaoTopo('hierarquia')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-emerald-500/90 via-green-600/90 to-teal-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-emerald-200/50 transition transform active:scale-95 group">
+            <button onclick="abrirSecaoTopo('hierarquia')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-emerald-500/90 via-green-600/90 to-teal-700/90 text-white rounded-xl shadow-lg border border-emerald-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
                     <i class="fa-solid fa-sitemap text-white text-[10px]"></i>
                 </div>
                 <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Hierarquia</span>
             </button>
 
-            <!-- 3. Azul -->
-            <button onclick="abrirSecaoTopo('fotos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-blue-500/90 via-indigo-600/90 to-blue-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-blue-200/50 transition transform active:scale-95 group">
+            <button onclick="abrirSecaoTopo('fotos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-blue-500/90 via-indigo-600/90 to-blue-700/90 text-white rounded-xl shadow-lg border border-blue-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
                     <i class="fa-solid fa-images text-white text-[10px]"></i>
                 </div>
                 <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Fotos</span>
             </button>
 
-            <!-- 4. Vermelho -->
-            <button onclick="abrirSecaoTopo('audio')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
+            <button onclick="abrirSecaoTopo('audio')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
                     <i class="fa-solid fa-volume-high text-white text-[10px]"></i>
                 </div>
                 <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Áudio Pr./Mis.</span>
             </button>
 
-            <!-- 5. Panfletos PDF (Branco Gradiente) -->
             <button onclick="abrirSecaoTopo('panfletos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:to-gray-300 text-gray-900 rounded-xl shadow-lg border border-white transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-gray-900/10 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
                     <i class="fa-solid fa-file-pdf text-red-700 text-[10px]"></i>
@@ -303,7 +307,6 @@
             <p class="text-gray-600 text-[10px] md:text-xs mb-2">"Entrai pela porta estreita..." (Mateus 7:13)</p>
             
             <div class="grid grid-cols-2 gap-2 mb-2">
-                <!-- Botão Porta Estreita (Céu) -->
                 <button onclick="responder('sim')" class="flex flex-col items-center justify-between p-2 bg-white border-4 rounded-xl shadow-2xl transform active:scale-95 transition group btn-emergency-green-border">
                     <div class="w-28 h-36 md:w-32 md:h-40 flex items-center justify-center mb-1 overflow-hidden">
                         <img src="logo1.png" alt="Porta Estreita - Céu" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
@@ -315,7 +318,6 @@
                     </span>
                 </button>
 
-                <!-- Botão Porta Larga (Inferno) -->
                 <button onclick="responder('nao')" class="flex flex-col items-center justify-between p-2 bg-white border-4 rounded-xl shadow-2xl transform active:scale-95 transition group btn-emergency-red-border">
                     <div class="w-28 h-36 md:w-32 md:h-40 flex items-center justify-center mb-1 overflow-hidden">
                         <img src="logo2.png" alt="Porta Larga - Perdição" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
@@ -328,20 +330,18 @@
                 </button>
             </div>
 
-            <!-- BOTÃO MURAL DE ORAÇÃO GIGANTE E FLUTUANTE -->
             <button onclick="irParaOracao()" class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black rounded-2xl shadow-2xl transition text-sm md:text-base flex items-center justify-center gap-3 border-2 border-blue-300 animate-float-big">
                 <i class="fa-solid fa-hands-praying text-yellow-300 text-lg"></i> Ir para o Mural de Oração e Testemunhos
             </button>
         </div>
 
-        <!-- 2. CAMINHO DA PORTA LARGA -->
+        <!-- Demais cards de navegação -->
         <div id="card-nao" class="hidden glass-card w-full max-w-lg rounded-2xl p-3 md:p-4 shadow-2xl border border-red-200">
             <div class="w-32 h-40 mx-auto mb-1 flex items-center justify-center overflow-hidden">
                 <img src="logo2.png" alt="Porta Larga" class="w-full h-full object-cover">
             </div>
             <h2 class="text-base md:text-lg font-bold text-red-600 text-center mb-0.5">A Rota da Porta Larga</h2>
             <p class="text-center text-[10px] text-red-500 font-semibold mb-2">"Larga é a porta, e espaçoso o caminho que conduz à perdição"</p>
-            
             <div class="text-gray-700 text-[10px] md:text-[11px] space-y-1.5 leading-relaxed bg-red-50/70 p-2.5 rounded-xl border border-red-100">
                 <p class="font-semibold text-red-800">O inimigo usa ilusões modernas para cegar e aprisionar as almas:</p>
                 <ul class="list-disc pl-4 space-y-0.5 font-medium text-red-900">
@@ -351,341 +351,208 @@
                     <li>Bebedearia, baladas, drogas e vida sem temor a Deus.</li>
                 </ul>
             </div>
-            
             <div class="flex flex-col gap-1.5 mt-2.5">
-                <button onclick="abrirTiposPecados()" class="w-full py-2 bg-gradient-to-r from-red-700 to-rose-900 hover:from-red-800 hover:to-black text-white font-black rounded-xl shadow border border-red-400 transition text-[11px] flex items-center justify-center gap-2">
+                <button onclick="abrirTiposPecados()" class="w-full py-2 bg-gradient-to-r from-red-700 to-rose-900 text-white font-black rounded-xl shadow border border-red-400 transition text-[11px] flex items-center justify-center gap-2">
                     <i class="fa-solid fa-shield-cat text-yellow-300"></i> Tipos de Pecados e Como Combatê-los
                 </button>
-
                 <button onclick="responder('sim')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition text-[11px] flex items-center justify-center gap-2">
                     <i class="fa-solid fa-person-walking-arrow-loop-left"></i> Mudar de Ideia e Escolher a Porta Estreita!
                 </button>
-                <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow hover:bg-gray-900 transition text-[10px]">
+                <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[10px]">
                     Voltar ao Início
                 </button>
             </div>
         </div>
 
-        <!-- 2.1. TELA: TIPOS DE PECADOS E COMO COMBATÊ-LOS -->
         <div id="card-tipos-pecados" class="hidden glass-card w-full max-w-lg rounded-2xl p-3 md:p-4 shadow-2xl border border-red-400">
             <h2 class="text-sm md:text-base font-black text-red-900 text-center mb-0.5 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-book-skull text-red-600"></i> Tipos de Pecados & Como Combatê-los
             </h2>
             <p class="text-center text-[10px] text-gray-600 mb-2">Conheça o laço e a arma espiritual para a vitória</p>
-
             <div class="space-y-2 text-[10px] md:text-[11px] leading-relaxed max-h-[42vh] overflow-y-auto pr-1 mb-2.5">
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">1. Idolatria</h3>
-                    <p class="text-gray-800">Veneração ou adoração a ídolos. Colocar qualquer pessoa ou coisa acima de Deus.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Mantenha Deus em primeiro lugar, reconhecendo Sua soberania acima de tudo.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">2. Roubo</h3>
-                    <p class="text-gray-800">Apropriação indébita de bens alheios.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Pratique a honestidade estrita, respeitando a propriedade do próximo.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">3. Mentira</h3>
-                    <p class="text-gray-800">Deturpação da verdade para enganar.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Comprometa-se com a verdade em todas as situações.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">4. Inveja</h3>
-                    <p class="text-gray-800">Amargura pelo bem alheio.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Cultive a gratidão e alegre-se com as conquistas dos outros.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">5. Imoralidade Sexual</h3>
-                    <p class="text-gray-800">Desvios e imundícia moral no campo da sexualidade.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Guarde a pureza e respeite os limites do corpo.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">6. Luxúria</h3>
-                    <p class="text-gray-800">Desejo passional desenfreado.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Exercite o autodomínio e não se deixe escravizar por paixões.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">7. Impureza</h3>
-                    <p class="text-gray-800">Falta de retidão moral e santidade.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Busque uma conduta íntegra e consagrada a Deus.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">8. Devassidão</h3>
-                    <p class="text-gray-800">Conduta desenfreada e sem pudor.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Mantenha a moderação e o respeito às normas morais.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">9. Feitiçaria</h3>
-                    <p class="text-gray-800">Manipulação de forças espirituais malignas.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Rejeite o ocultismo e busque direção exclusivamente em Deus.</p>
-                </div>
-                <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-                    <h3 class="font-black text-red-900 text-[11px] mb-0.5">10. Inimizades e Rivalidades</h3>
-                    <p class="text-gray-800">Sentimentos de hostilidade e competição destrutiva.</p>
-                    <p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Promova a reconciliação e valorize a união.</p>
-                </div>
+                <div class="bg-red-50 p-2 rounded-xl border border-red-200"><h3 class="font-black text-red-900 text-[11px] mb-0.5">1. Idolatria</h3><p class="text-gray-800">Veneração ou adoração a ídolos. Colocar qualquer pessoa ou coisa acima de Deus.</p><p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Mantenha Deus em primeiro lugar.</p></div>
+                <div class="bg-red-50 p-2 rounded-xl border border-red-200"><h3 class="font-black text-red-900 text-[11px] mb-0.5">2. Roubo</h3><p class="text-gray-800">Apropriação indébita de bens alheios.</p><p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Pratique a honestidade estrita.</p></div>
+                <div class="bg-red-50 p-2 rounded-xl border border-red-200"><h3 class="font-black text-red-900 text-[11px] mb-0.5">3. Mentira</h3><p class="text-gray-800">Deturpação da verdade para enganar.</p><p class="text-red-700 font-semibold mt-0.5">🛡️ <strong>Como combater:</strong> Comprometa-se com a verdade.</p></div>
             </div>
-
             <div class="flex flex-col gap-1.5">
-                <button onclick="responder('nao')" class="w-full py-2 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl shadow transition text-xs">
-                    Voltar à Porta Larga
-                </button>
-                <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow hover:bg-gray-900 transition text-[10px]">
-                    Ir para o Início
-                </button>
+                <button onclick="responder('nao')" class="w-full py-2 bg-red-700 text-white font-bold rounded-xl shadow transition text-xs">Voltar à Porta Larga</button>
+                <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[10px]">Ir para o Início</button>
             </div>
         </div>
 
-        <!-- 3. CAMINHO DA PORTA ESTREITA -->
         <div id="card-sim" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-emerald-200">
             <div class="w-32 h-40 mx-auto mb-2 flex items-center justify-center overflow-hidden">
                 <img src="logo1.png" alt="Porta Estreita" class="w-full h-full object-contain">
             </div>
             <h2 class="text-xl font-extrabold text-emerald-700 text-center mb-0.5">A Rota da Porta Estreita!</h2>
             <p class="text-center text-[11px] font-bold text-emerald-600 mb-3 uppercase tracking-wider">A Escolha da Vida Eterna com Cristo</p>
-
             <div class="text-gray-700 text-xs space-y-2 leading-relaxed bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 mb-3">
-                <p>Você escolheu a porta que conduz à **salvação**! Jesus deu a Sua vida na cruz e ressuscitou para nos libertar de todas as armadilhas do pecado.</p>
-                <p class="font-semibold text-emerald-800">"Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim." (João 14:6)</p>
+                <p>Você escolheu a porta que conduz à **salvação**! Jesus deu a Sua vida na cruz e ressuscitou para nos libertar.</p>
             </div>
-
             <div class="flex flex-col gap-2">
-                <button onclick="mostrarQuemEJesus()" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <button onclick="mostrarQuemEJesus()" class="w-full py-2.5 px-4 bg-indigo-600 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-book-bible"></i> Quem é Jesus e por que aceitá-lo?
                 </button>
-                <button onclick="irParaOracao()" class="w-full py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <button onclick="irParaOracao()" class="w-full py-2 px-4 bg-amber-600 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-hands-praying"></i> Deixar Pedido / Testemunho
                 </button>
             </div>
         </div>
 
-        <!-- 3.1. QUEM É JESUS -->
         <div id="card-quem-e-jesus" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-indigo-200">
             <div class="w-12 h-12 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center mx-auto mb-2 text-xl shadow-inner">
                 <i class="fa-solid fa-lightbulb"></i>
             </div>
             <h2 class="text-lg font-black text-indigo-900 text-center mb-0.5">Quem é Jesus e Por Que Aceitá-Lo?</h2>
-            <p class="text-center text-[11px] text-gray-500 mb-3">O sacrifício perfeito e o verdadeiro exemplo</p>
-
             <div class="text-gray-700 text-[11px] space-y-2 leading-relaxed bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 max-h-[35vh] overflow-y-auto mb-3">
-                <p>Jesus foi o <strong>único sacrifício puro</strong>. Sendo o próprio Filho de Deus, veio em forma humana, sujeito a dores e provações, mas viveu sem pecado.</p>
-                <p>Ele nos deu o exemplo supremo de que, com <strong>fé e amor</strong>, é possível vencer o mal. Aceitá-Lo significa abandonar as obras das trevas para viver em santidade.</p>
+                <p>Jesus foi o <strong>único sacrifício puro</strong>. Sendo o próprio Filho de Deus, veio em forma humana para nos salvar.</p>
             </div>
-
             <div class="flex flex-col gap-2">
-                <button onclick="mostrarCaminhada()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-shoe-prints"></i> Como Caminhar com Jesus Agora
-                </button>
-                <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-semibold rounded-xl shadow hover:bg-gray-900 transition text-xs">
-                    Voltar ao Início
-                </button>
+                <button onclick="mostrarCaminhada()" class="w-full py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow transition text-xs">Como Caminhar com Jesus Agora</button>
+                <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-xs">Voltar ao Início</button>
             </div>
         </div>
 
-        <!-- 4. GUIA DE CAMINHADA COM CRISTO -->
         <div id="card-caminhada" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-blue-200">
             <h2 class="text-lg font-black text-blue-900 text-center mb-0.5">Como Caminhar com Cristo</h2>
-            <p class="text-center text-[11px] text-gray-500 mb-3">Orientação bíblica para a vida cristã diária</p>
-
-            <div class="space-y-2 text-[11px] leading-relaxed max-h-[35vh] overflow-y-auto pr-1 mb-3">
+            <div class="space-y-2 text-[11px] leading-relaxed mb-3">
                 <div class="bg-blue-50/80 p-2.5 rounded-xl border border-blue-100">
-                    <h3 class="font-bold text-blue-800 text-xs mb-0.5 flex items-center gap-1">
-                        <i class="fa-solid fa-scroll"></i> 1. Guardar os Mandamentos
-                    </h3>
+                    <h3 class="font-bold text-blue-800 text-xs mb-0.5">1. Guardar os Mandamentos</h3>
                     <p class="text-gray-700">Amar a Deus sobre todas as coisas e ao próximo como a si mesmo.</p>
                 </div>
             </div>
-
             <div class="flex flex-col gap-2">
-                <button onclick="irParaOracao()" class="w-full py-2 bg-amber-600 text-white font-bold rounded-xl shadow hover:bg-amber-700 transition text-xs">
-                    Ir para o Mural de Oração
-                </button>
-                <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-semibold rounded-xl shadow hover:bg-gray-900 transition text-xs">
-                    Voltar ao Início
-                </button>
+                <button onclick="irParaOracao()" class="w-full py-2 bg-amber-600 text-white font-bold rounded-xl shadow transition text-xs">Ir para o Mural de Oração</button>
+                <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-xs">Voltar ao Início</button>
             </div>
         </div>
 
-        <!-- 5. MURAL DE ORAÇÃO E TESTEMUNHOS -->
         <div id="card-oracao" class="hidden glass-card w-full max-w-4xl rounded-2xl p-3 md:p-5 shadow-2xl border border-amber-200">
             <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-1 text-lg shadow-inner">
                 <i class="fa-solid fa-hands-praying"></i>
             </div>
             <h2 class="text-base md:text-lg font-black text-amber-900 text-center mb-0.5">Mural de Oração & Testemunhos REAJ</h2>
-            <p class="text-center text-[10px] md:text-[11px] text-gray-600 mb-3">Peça oração ou compartilhe um milagre! (Validade de 7 dias por postagem)</p>
-
+            <p class="text-center text-[10px] text-gray-600 mb-3">Validade de 7 dias por postagem</p>
             <div class="grid grid-cols-2 gap-2 md:gap-3 items-start mb-3">
-                <div class="bg-amber-50/90 p-2.5 rounded-xl border border-amber-100 flex flex-col justify-between space-y-2 shadow-sm">
+                <div class="bg-amber-50/90 p-2.5 rounded-xl border border-amber-100 flex flex-col justify-between space-y-2">
                     <div>
-                        <h3 class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1 mb-1.5">
-                            <i class="fa-solid fa-pen-to-square"></i> Escrever
-                        </h3>
+                        <h3 class="text-[10px] font-bold uppercase tracking-wider text-amber-800 mb-1.5">Escrever</h3>
                         <div class="space-y-1.5">
-                            <div>
-                                <select id="input-tipo" class="w-full px-2 py-1 text-[10px] md:text-xs bg-white border border-gray-300 rounded-lg font-semibold text-amber-900">
-                                    <option value="oracao">🙏 Pedido de Oração</option>
-                                    <option value="testemunho">🙌 Testemunho</option>
-                                </select>
-                            </div>
-                            <div>
-                                <input type="text" id="input-nome" placeholder="Seu Nome" class="w-full px-2 py-1 text-[10px] md:text-xs bg-white border border-gray-300 rounded-lg">
-                            </div>
-                            <div>
-                                <textarea id="input-pedido" rows="2" placeholder="Sua mensagem..." class="w-full px-2 py-1 text-[10px] md:text-xs bg-white border border-gray-300 rounded-lg resize-none"></textarea>
-                            </div>
+                            <select id="input-tipo" class="w-full px-2 py-1 text-[10px] bg-white border border-gray-300 rounded-lg font-semibold text-amber-900">
+                                <option value="oracao">🙏 Pedido de Oração</option>
+                                <option value="testemunho">🙌 Testemunho</option>
+                            </select>
+                            <input type="text" id="input-nome" placeholder="Seu Nome" class="w-full px-2 py-1 text-[10px] bg-white border border-gray-300 rounded-lg">
+                            <textarea id="input-pedido" rows="2" placeholder="Sua mensagem..." class="w-full px-2 py-1 text-[10px] bg-white border border-gray-300 rounded-lg resize-none"></textarea>
                         </div>
                     </div>
-                    <button onclick="adicionarPedido()" class="w-full py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shadow transition text-[10px] md:text-xs flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-paper-plane"></i> Publicar
-                    </button>
+                    <button onclick="adicionarPedido()" class="w-full py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shadow transition text-[10px]">Publicar</button>
                 </div>
-
                 <div class="bg-white/90 p-2.5 rounded-xl border border-amber-100 flex flex-col justify-between shadow-sm">
                     <div>
-                        <h3 class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5 flex items-center justify-between">
-                            <span><i class="fa-solid fa-list-check"></i> Quadro Vivo</span>
-                            <span class="text-[8px] text-amber-700 bg-amber-100 px-1 py-0.2 rounded-full font-semibold">Expira em 7 dias</span>
+                        <h3 class="text-[10px] font-bold uppercase tracking-wider text-gray-700 mb-1.5 flex items-center justify-between">
+                            <span>Quadro Vivo</span>
+                            <span class="text-[8px] text-amber-700 bg-amber-100 px-1 py-0.2 rounded-full">Expira em 7 dias</span>
                         </h3>
                         <div id="lista-pedidos" class="space-y-1.5 max-h-[30vh] overflow-y-auto pr-0.5"></div>
                     </div>
                 </div>
             </div>
-
-            <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl shadow hover:bg-gray-900 transition text-xs">
-                Voltar ao Início
-            </button>
+            <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl shadow transition text-xs">Voltar ao Início</button>
         </div>
 
-        <!-- 6. MENU SECRETO DO ESCUDO -->
         <div id="card-menu-escudo" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-yellow-300">
             <div class="w-12 h-12 mx-auto mb-2 flex items-center justify-center rounded-xl shadow-inner border-2 border-yellow-300 bg-black/20 overflow-hidden">
                 <img src="logo3.png" alt="Logo REAJ" class="w-full h-full object-contain filter drop-shadow">
             </div>
             <h2 class="text-lg font-black text-gray-900 text-center mb-0.5">Missão e Obras da REAJ</h2>
-            <p class="text-center text-[11px] text-gray-600 mb-3">Conheça nossos trabalhos e caminhos na terra</p>
-
             <div class="space-y-2 mb-3 max-h-[32vh] overflow-y-auto pr-1">
                 <button onclick="abrirSubPagina('lideranca')" class="w-full py-2 px-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-white font-black rounded-xl shadow transition text-[11px] flex items-center justify-between border border-yellow-300">
-                    <span class="text-left leading-tight">Pastor Presidente Flávio REAJ e Missionária Gisele</span>
+                    <span>Pastor Presidente Flávio REAJ e Missionária Gisele</span>
                     <i class="fa-solid fa-chevron-right text-white"></i>
                 </button>
                 <button onclick="abrirGuerraEspiritual()" class="w-full py-2 px-3 bg-gradient-to-r from-red-600 to-rose-700 text-white font-black rounded-xl shadow transition text-[11px] flex items-center justify-between border border-red-400">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-skull-crossbones text-yellow-300"></i> Guerra com Espíritos Malignos</span>
+                    <span>Guerra com Espíritos Malignos</span>
                     <i class="fa-solid fa-chevron-right text-yellow-300"></i>
                 </button>
                 <button onclick="abrirSubPagina('endereco')" class="w-full py-2 px-3 bg-white hover:bg-yellow-50 text-gray-800 font-bold rounded-xl shadow border border-gray-200 transition text-[11px] flex items-center justify-between">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-red-600"></i> Endereço da Nossa Igreja</span>
+                    <span>Endereço da Nossa Igreja</span>
                     <i class="fa-solid fa-chevron-right text-gray-400"></i>
                 </button>
                 <button onclick="abrirSubPagina('social')" class="w-full py-2 px-3 bg-white hover:bg-yellow-50 text-gray-800 font-bold rounded-xl shadow border border-gray-200 transition text-[11px] flex items-center justify-between">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-handshake text-emerald-600"></i> Trabalhos Sociais</span>
+                    <span>Trabalhos Sociais</span>
                     <i class="fa-solid fa-chevron-right text-gray-400"></i>
                 </button>
                 <button onclick="abrirSubPagina('presidio')" class="w-full py-2 px-3 bg-white hover:bg-yellow-50 text-gray-800 font-bold rounded-xl shadow border border-gray-200 transition text-[11px] flex items-center justify-between">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-key text-amber-600"></i> Visita em Presídios</span>
+                    <span>Visita em Presídios</span>
                     <i class="fa-solid fa-chevron-right text-gray-400"></i>
                 </button>
                 <button onclick="abrirSubPagina('libertacao')" class="w-full py-2 px-3 bg-white hover:bg-yellow-50 text-gray-800 font-bold rounded-xl shadow border border-gray-200 transition text-[11px] flex items-center justify-between">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-fire text-orange-600"></i> Curas e Libertação</span>
+                    <span>Curas e Libertação</span>
                     <i class="fa-solid fa-chevron-right text-gray-400"></i>
                 </button>
             </div>
-
-            <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl shadow hover:bg-gray-900 transition text-xs">
-                Voltar ao Início
-            </button>
+            <button onclick="reiniciar()" class="w-full py-2 bg-gray-800 text-white font-bold rounded-xl shadow transition text-xs">Voltar ao Início</button>
         </div>
 
-        <!-- 6.1. TELA DE GUERRA ESPIRITUAL -->
         <div id="card-guerra-espiritual" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-red-300">
             <h2 class="text-sm font-black text-red-900 text-center mb-1">Guerra Face a Face com Espíritos Malignos</h2>
             <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg mb-2 bg-black border border-red-500">
                 <iframe id="iframe-outdoor" class="absolute top-0 left-0 w-full h-full" src="" title="Outdoor" frameborder="0" allowfullscreen></iframe>
             </div>
             <div class="space-y-1.5 mb-2 max-h-[22vh] overflow-y-auto pr-1">
-                <button onclick="abrirVideoLibertacao('vicios')" class="w-full py-1.5 px-2.5 bg-white hover:bg-red-50 text-red-900 font-bold rounded-lg shadow border border-red-200 transition text-[10px] flex items-center justify-between">
-                    <span><i class="fa-solid fa-bolt text-red-600 mr-1"></i> Libertação dos Vícios e Drogas</span>
-                    <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                </button>
-                <button onclick="abrirVideoLibertacao('depressao')" class="w-full py-1.5 px-2.5 bg-white hover:bg-red-50 text-red-900 font-bold rounded-lg shadow border border-red-200 transition text-[10px] flex items-center justify-between">
-                    <span><i class="fa-solid fa-cloud-rain text-red-600 mr-1"></i> Cura da Depressão e Opressão</span>
-                    <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                </button>
-                <button onclick="abrirVideoLibertacao('correntes')" class="w-full py-1.5 px-2.5 bg-white hover:bg-red-50 text-red-900 font-bold rounded-lg shadow border border-red-200 transition text-[10px] flex items-center justify-between">
-                    <span><i class="fa-solid fa-link-slash text-red-600 mr-1"></i> Quebrando Maldições Hereditárias</span>
-                    <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                </button>
+                <button onclick="abrirVideoLibertacao('vicios')" class="w-full py-1.5 px-2.5 bg-white text-red-900 font-bold rounded-lg shadow border border-red-200 text-[10px] flex items-center justify-between"><span>Libertação dos Vícios e Drogas</span><i class="fa-solid fa-chevron-right text-gray-400"></i></button>
+                <button onclick="abrirVideoLibertacao('depressao')" class="w-full py-1.5 px-2.5 bg-white text-red-900 font-bold rounded-lg shadow border border-red-200 text-[10px] flex items-center justify-between"><span>Cura da Depressão e Opressão</span><i class="fa-solid fa-chevron-right text-gray-400"></i></button>
+                <button onclick="abrirVideoLibertacao('correntes')" class="w-full py-1.5 px-2.5 bg-white text-red-900 font-bold rounded-lg shadow border border-red-200 text-[10px] flex items-center justify-between"><span>Quebrando Maldições Hereditárias</span><i class="fa-solid fa-chevron-right text-gray-400"></i></button>
             </div>
-            <button onclick="abrirMenuEscudo()" class="w-full py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-xl shadow transition text-xs mb-1">
-                Voltar aos Trabalhos da REAJ
-            </button>
-            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">
-                Ir para o Início
-            </button>
+            <button onclick="abrirMenuEscudo()" class="w-full py-2 bg-yellow-600 text-white font-bold rounded-xl shadow transition text-xs mb-1">Voltar aos Trabalhos</button>
+            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">Ir para o Início</button>
         </div>
 
-        <!-- 6.2. TELA DO REPRODUTOR DE VÍDEO -->
         <div id="card-player-video" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-red-400">
             <h3 id="titulo-video" class="font-black text-gray-900 text-xs text-center mb-2">Momento de Libertação</h3>
             <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg mb-3 bg-black">
                 <iframe id="iframe-youtube" class="absolute top-0 left-0 w-full h-full" src="" title="Vídeo" frameborder="0" allowfullscreen></iframe>
             </div>
-            <button onclick="abrirGuerraEspiritual()" class="w-full py-2 bg-red-700 text-white font-bold rounded-xl shadow transition text-xs mb-1.5">
-                Voltar ao Menu de Guerra
-            </button>
-            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">
-                Ir para o Início
-            </button>
+            <button onclick="abrirGuerraEspiritual()" class="w-full py-2 bg-red-700 text-white font-bold rounded-xl shadow transition text-xs mb-1.5">Voltar ao Menu de Guerra</button>
+            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">Ir para o Início</button>
         </div>
 
-        <!-- 7. SUBPÁGINAS -->
         <div id="card-subpagina" class="hidden glass-card w-full max-w-lg rounded-2xl p-4 shadow-2xl border border-blue-200">
             <div id="conteudo-subpagina" class="text-gray-700 text-[11px] space-y-2 leading-relaxed mb-3 max-h-[35vh] overflow-y-auto"></div>
-            <button onclick="reiniciar()" class="w-full py-2 bg-yellow-600 text-white font-bold rounded-xl shadow transition text-xs mb-1.5">
-                Voltar ao Início
-            </button>
-            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">
-                Ir para o Início
-            </button>
+            <button onclick="reiniciar()" class="w-full py-2 bg-yellow-600 text-white font-bold rounded-xl shadow transition text-xs mb-1.5">Voltar ao Início</button>
+            <button onclick="reiniciar()" class="w-full py-1.5 bg-gray-800 text-white font-semibold rounded-xl shadow transition text-[11px]">Ir para o Início</button>
         </div>
 
-        <!-- BOTÕES DE REDES SOCIAIS E CONTATO COM O MESMO TAMANHO E ALINHAMENTO -->
+        <!-- REDES SOCIAIS -->
         <div class="w-full max-w-md grid grid-cols-4 gap-2 shrink-0 pt-1">
-            <a href="https://www.facebook.com/61593770679581/" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#1877F2] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center leading-tight">
-                <i class="fa-brands fa-facebook-f text-xs mb-0.5"></i>
-                <span>Facebook</span>
+            <a href="https://www.facebook.com/61593770679581/" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#1877F2] text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center">
+                <i class="fa-brands fa-facebook-f text-xs mb-0.5"></i><span>Facebook</span>
             </a>
-            <a href="https://www.instagram.com/flaviogiseleofc/?utm_source=ig_web_button_share_sheet" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center leading-tight">
-                <i class="fa-brands fa-instagram text-xs mb-0.5"></i>
-                <span>Instagram</span>
+            <a href="https://www.instagram.com/flaviogiseleofc/?utm_source=ig_web_button_share_sheet" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center">
+                <i class="fa-brands fa-instagram text-xs mb-0.5"></i><span>Instagram</span>
             </a>
-            <a href="https://m.youtube.com/@flavioegiseleresgatandoalmas" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#FF0000] hover:bg-red-700 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center leading-tight">
-                <i class="fa-brands fa-youtube text-xs mb-0.5"></i>
-                <span>YouTube</span>
+            <a href="https://m.youtube.com/@flavioegiseleresgatandoalmas" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#FF0000] text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center">
+                <i class="fa-brands fa-youtube text-xs mb-0.5"></i><span>YouTube</span>
             </a>
-            
             <div class="flex flex-col items-center col-span-1">
-                <a href="mailto:2020reaj@gmail.com?subject=Fale%20conosco%20-%20Deixe%20o%20motivo%20do%20contato" class="w-full flex flex-col items-center justify-center py-1.5 px-1 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center leading-tight">
-                    <i class="fa-solid fa-envelope text-yellow-300 text-xs mb-0.5"></i>
-                    <span>Entre em contato conosco</span>
+                <a href="mailto:2020reaj@gmail.com?subject=Fale%20conosco" class="w-full flex flex-col items-center justify-center py-1.5 px-1 bg-gray-800 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center">
+                    <i class="fa-solid fa-envelope text-yellow-300 text-xs mb-0.5"></i><span>Contato</span>
                 </a>
-                <span class="text-[7.5px] text-white/80 text-center mt-0.5 leading-tight">deixe o motivo do contato no assunto do email</span>
             </div>
         </div>
-
     </main>
 
-    <!-- Rodapé Simples -->
+    <!-- Rodapé -->
     <footer class="w-full p-2 z-15 bg-black/30 backdrop-blur-sm text-center text-white/90 text-[10px] shrink-0">
         REAJ — A Serviço do Rei
     </footer>
 
-    <!-- CONTAINER OCULTO PARA TOCAR OS CORINHOS EM BACKGROUND -->
     <div id="container-player-secreto" class="hidden">
         <iframe id="iframe-corinhos" src="" allow="autoplay"></iframe>
     </div>
 
-    <!-- MODAL PARA AMPLIAR FOTO -->
+    <!-- MODAL FOTO -->
     <div id="modal-foto" onclick="fecharModalFoto()" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-3 cursor-pointer">
         <div class="relative max-w-2xl w-full">
             <img id="imagem-modal" src="" alt="Foto Ampliada" class="w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border-2 border-yellow-300">
@@ -693,6 +560,8 @@
         </div>
     </div>
 
+    <!-- API DO YOUTUBE IFRAME PLAYER PARA DETECTAR O FIM DO VÍDEO -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         const listaCorinhos = [
             "https://www.youtube.com/embed/0jLq90ea3Mo?autoplay=1&enablejsapi=1",
@@ -719,7 +588,6 @@
             }
         }
 
-        // Variável para gerenciar a instalação do aplicativo (PWA)
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -730,24 +598,64 @@
             carregarPedidos();
             atualizarContadorAcessos();
             history.replaceState({ tela: 'inicio' }, '');
-            // Abre o vídeo de boas-vindas automaticamente ao carregar o site
             abrirModalSaudacao();
         });
 
+        // Configuração do Player do YouTube para detectar quando o vídeo termina
+        let playerSaudacao;
+        function onYouTubeIframeAPIReady() {
+            playerSaudacao = new YT.Player('player-youtube-saudacao', {
+                height: '100%',
+                width: '100%',
+                videoId: 'aRtdQB3CyUw',
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1,
+                    'rel': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            // Estado 0 significa que o vídeo terminou (Ended)
+            if (event.data === YT.PlayerState.ENDED) {
+                liberarFechamentoVideo();
+            }
+        }
+
+        function liberarFechamentoVideo() {
+            // Esconde o aviso de comunicado e mostra o botão de fechar e continuar
+            document.getElementById('aviso-comunicado').classList.add('hidden');
+            document.getElementById('container-botao-fechar').classList.remove('hidden');
+            document.getElementById('container-botao-fechar').classList.add('flex');
+            document.getElementById('btn-continuar-site').classList.remove('hidden');
+        }
+
         function abrirModalSaudacao() {
             const modal = document.getElementById('modal-saudacao');
-            const iframe = document.getElementById('iframe-saudacao');
-            iframe.src = "https://drive.google.com/file/d/1XiUt0mugk_eaHwtkhyffXLDRXlAloTtP/preview?autoplay=1";
+            // Reseta o estado visual ao reabrir
+            document.getElementById('container-botao-fechar').classList.add('hidden');
+            document.getElementById('container-botao-fechar').classList.remove('flex');
+            document.getElementById('aviso-comunicado').classList.remove('hidden');
+            document.getElementById('btn-continuar-site').classList.add('hidden');
+            
             modal.classList.remove('hidden');
+            if (playerSaudacao && typeof playerSaudacao.playVideo === 'function') {
+                playerSaudacao.playVideo();
+            }
         }
 
         function fecharModalSaudacao() {
             const modal = document.getElementById('modal-saudacao');
-            const iframe = document.getElementById('iframe-saudacao');
-            iframe.src = "";
+            if (playerSaudacao && typeof playerSaudacao.pauseVideo === 'function') {
+                playerSaudacao.pauseVideo();
+            }
             modal.classList.add('hidden');
 
-            // LOGICA PEDIDA: Assim que o usuário fecha o vídeo, dispara o convite para instalar o app
             setTimeout(() => {
                 if (deferredPrompt) {
                     const instalarApp = confirm("Deseja instalar o atalho do Ministério REAJ direto na tela do seu celular como um aplicativo?");
@@ -761,13 +669,11 @@
                         });
                     }
                 } else {
-                    // Caso o navegador já tenha o app instalado ou não suporte o prompt automático
                     mostrarToast("✨ Dica: Você também pode adicionar este site à tela inicial pelas opções do navegador!");
                 }
             }, 500);
         }
 
-        // Função para incrementar e buscar a contagem real de visitas
         function atualizarContadorAcessos() {
             const spanContador = document.getElementById('contador-visualizacoes');
             const apiURL = "https://api.countapi.xyz/hit/reaj-ministerio-oficial/acessos";
@@ -915,7 +821,7 @@
             const titulo = document.getElementById('titulo-video');
 
             if(tipo === 'vicios') {
-                titulo.innerText = "Libertação dos Vícios e Drogas (Dívida da Morte)";
+                titulo.innerText = "Libertação dos Vícios e Drogas";
                 if(iframe) iframe.src = "https://www.youtube.com/embed/k-HKulzbkCE?start=279&autoplay=1&mute=0";
             } else if(tipo === 'depressao') {
                 titulo.innerText = "Cura da Depressão e Opressão";
@@ -1060,9 +966,7 @@
                 `;
             } else if(tipo === 'endereco') {
                 container.innerHTML = `
-                    <div class="text-center">
-                        <h3 class="font-black text-gray-900 text-xs mb-1">Endereço e Horários da Igreja</h3>
-                    </div>
+                    <div class="text-center"><h3 class="font-black text-gray-900 text-xs mb-1">Endereço e Horários da Igreja</h3></div>
                     <p class="text-center font-semibold text-gray-800">📍 Estrada Municipal Sebastião Bastos, 228</p>
                     <div class="bg-red-50 p-2.5 rounded-xl border border-red-100 space-y-1 text-[11px] text-red-900">
                         <p>🔥 <strong>Cultos:</strong> Quartas e Sábados a partir das 19:00</p>
@@ -1071,9 +975,7 @@
                 `;
             } else if(tipo === 'social') {
                 container.innerHTML = `
-                    <div class="text-center">
-                        <h3 class="font-black text-gray-900 text-xs mb-1">Trabalhos Sociais</h3>
-                    </div>
+                    <div class="text-center"><h3 class="font-black text-gray-900 text-xs mb-1">Trabalhos Sociais</h3></div>
                     <p class="text-[11px]">A fé sem obras é morta. A REAJ atua ativamente levando o amor prático de Cristo:</p>
                     <ul class="list-disc pl-4 space-y-1 text-[11px] font-medium text-emerald-900">
                         <li>Distribuição de cestas básicas para famílias carentes;</li>
@@ -1083,9 +985,7 @@
                 `;
             } else if(tipo === 'presidio') {
                 container.innerHTML = `
-                    <div class="text-center">
-                        <h3 class="font-black text-gray-900 text-xs mb-1">Visita em Presídios</h3>
-                    </div>
+                    <div class="text-center"><h3 class="font-black text-gray-900 text-xs mb-1">Visita em Presídios</h3></div>
                     <p class="text-[11px]">Lembrando-nos dos que estão presos, como se presos com eles estivéssemos (Hebreus 13:3):</p>
                     <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-100 space-y-1 text-[11px]">
                         <p>Levamos a verdadeira liberdade que só Jesus pode dar através da pregação do Evangelho e entrega de Bíblias nos cárceres.</p>
@@ -1093,9 +993,7 @@
                 `;
             } else if(tipo === 'libertacao') {
                 container.innerHTML = `
-                    <div class="text-center">
-                        <h3 class="font-black text-gray-900 text-xs mb-1">Curas e Libertação</h3>
-                    </div>
+                    <div class="text-center"><h3 class="font-black text-gray-900 text-xs mb-1">Curas e Libertação</h3></div>
                     <p class="text-[11px]">Pelo poder do nome de Jesus, correntes são quebradas e enfermos são curados:</p>
                     <p class="text-[11px]">Através da oração fervorosa e jejum, vidas são restauradas dos vícios em drogas, pornografia, *bets* e depressão.</p>
                 `;
