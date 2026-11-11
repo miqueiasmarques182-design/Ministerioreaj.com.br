@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aceitar a Jesus - REAJ</title>
+    <title>Ministério REAJ — Em Defesa do Evangelho</title>
+
+    <!-- Configuração de PWA (Aplicativo na Tela Inicial) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3c72">
+
+    <!-- Configurações para preview no WhatsApp e Redes Sociais (Open Graph) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ministerioreaj.com.br/">
+    <meta property="og:title" content="Ministério REAJ — Em Defesa do Evangelho">
+    <meta property="og:description" content="Conheça a missão da REAJ, pedidos de oração, testemunhos, panfletos e a caminhada com Cristo.">
+    <meta property="og:image" content="https://ministerioreaj.com.br/logo.png">
+    <meta property="og:image:secure_url" content="https://ministerioreaj.com.br/logo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -163,19 +179,51 @@
                 <img src="logo.png" alt="Logo REAJ" class="w-12 h-16 object-contain rounded-xl shadow-2xl border-2 border-yellow-300 animate-float bg-black/40 group-hover:scale-110 transition duration-300">
                 <span class="text-[8px] text-yellow-200 font-bold mt-0.5 bg-black/50 px-1.5 py-0.2 rounded-full shadow">Toque no escudo</span>
             </div>
-            <!-- Player de Corinhos de Fogo (Bem pequeno e discreto logo abaixo do escudo) -->
-            <div class="mt-1 flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full border border-yellow-300/50 shadow">
-                <button id="btn-audio-player" onclick="toggleCorinhos()" class="text-yellow-300 hover:text-white transition text-xs flex items-center gap-1 font-bold" title="Tocar corinhos de fogo">
-                    <i id="icone-audio-player" class="fa-solid fa-play text-[10px]"></i>
-                    <span class="text-[8px] uppercase tracking-wider">Corinhos</span>
-                </button>
+            <!-- Player de Corinhos de Fogo e Botão de Vídeo de Boas-Vindas -->
+            <div class="mt-1 flex items-center gap-1">
+                <div class="flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full border border-yellow-300/50 shadow">
+                    <button id="btn-audio-player" onclick="toggleCorinhos()" class="text-yellow-300 hover:text-white transition text-xs flex items-center gap-1 font-bold" title="Tocar corinhos de fogo">
+                        <i id="icone-audio-player" class="fa-solid fa-play text-[10px]"></i>
+                        <span class="text-[8px] uppercase tracking-wider">Corinhos</span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-1 bg-red-800/80 backdrop-blur-md px-2 py-0.5 rounded-full border border-red-300/50 shadow">
+                    <button onclick="abrirModalSaudacao()" class="text-white hover:text-yellow-300 transition text-xs flex items-center gap-1 font-bold" title="Vídeo de Boas-Vindas">
+                        <i class="fa-solid fa-video text-[10px] text-yellow-300"></i>
+                        <span class="text-[8px] uppercase tracking-wider">Vídeo de Boas-Vindas</span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Alerta flutuante de Pix copiado -->
+    <!-- Alerta flutuante genérico (Pix ou Avisos do Mural) -->
     <div id="toast-pix" class="fixed top-3 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2 z-50">
-        <i class="fa-solid fa-circle-check"></i> Chave Pix copiada com sucesso!
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
+    </div>
+
+    <!-- MODAL DE SAUDAÇÃO (COM O AVISO "feche vídeo" AO LADO DO X) -->
+    <div id="modal-saudacao" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3">
+        <div class="bg-gray-900 border-2 border-yellow-400 w-full max-w-2xl rounded-2xl p-4 shadow-2xl relative flex flex-col items-center">
+            
+            <!-- Botão de Fechar com a frase "feche vídeo" ao lado -->
+            <div class="absolute top-3 right-3 flex items-center gap-2 z-10">
+                <span class="text-[11px] text-yellow-300 font-bold bg-black/60 px-2 py-1 rounded-lg border border-yellow-400/40 animate-pulse">feche vídeo</span>
+                <button onclick="fecharModalSaudacao()" class="bg-red-700 hover:bg-red-800 text-white w-8 h-8 rounded-full font-bold flex items-center justify-center shadow transition text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <h2 class="text-sm md:text-base font-black text-yellow-300 mb-2 text-center flex items-center gap-2 pr-24">
+                <i class="fa-solid fa-dove"></i> Vídeo de Boas-Vindas - Ministério REAJ
+            </h2>
+            <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black border border-yellow-500/50 mb-3">
+                <iframe id="iframe-saudacao" class="absolute top-0 left-0 w-full h-full" src="" title="Vídeo de Boas-Vindas" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <button onclick="fecharModalSaudacao()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-black rounded-xl shadow transition text-xs">
+                Continuar para o Site
+            </button>
+        </div>
     </div>
 
     <!-- Conteúdo Principal Centralizado -->
@@ -190,38 +238,46 @@
             </div>
         </div>
 
-        <!-- 4 BOTÕES DO TOPO (Amarelo, Verde, Azul, Vermelho - Brilhoso Gradiente com leve opacidade) -->
-        <div class="w-full max-w-md grid grid-cols-4 gap-2 shrink-0">
+        <!-- BOTÕES DO TOPO (Regulamento, Hierarquia, Fotos, Áudio, Panfletos em Branco Gradiente) -->
+        <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
             <!-- 1. Amarelo -->
-            <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-2 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
-                <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center mb-1 group-hover:scale-110 transition shadow-inner">
-                    <i class="fa-solid fa-book-open text-white text-xs"></i>
+            <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
+                <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
+                    <i class="fa-solid fa-book-open text-white text-[10px]"></i>
                 </div>
-                <span class="text-[9px] font-bold text-center leading-tight text-white drop-shadow">(R.I) Regulamento interno</span>
+                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Regulamento</span>
             </button>
 
             <!-- 2. Verde -->
-            <button onclick="abrirSecaoTopo('hierarquia')" class="flex flex-col items-center justify-center p-2 bg-gradient-to-br from-emerald-500/90 via-green-600/90 to-teal-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-emerald-200/50 transition transform active:scale-95 group">
-                <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center mb-1 group-hover:scale-110 transition shadow-inner">
-                    <i class="fa-solid fa-sitemap text-white text-xs"></i>
+            <button onclick="abrirSecaoTopo('hierarquia')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-emerald-500/90 via-green-600/90 to-teal-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-emerald-200/50 transition transform active:scale-95 group">
+                <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
+                    <i class="fa-solid fa-sitemap text-white text-[10px]"></i>
                 </div>
-                <span class="text-[9px] font-bold text-center leading-tight text-white drop-shadow">Hierarquia do ministério</span>
+                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Hierarquia</span>
             </button>
 
             <!-- 3. Azul -->
-            <button onclick="abrirSecaoTopo('fotos')" class="flex flex-col items-center justify-center p-2 bg-gradient-to-br from-blue-500/90 via-indigo-600/90 to-blue-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-blue-200/50 transition transform active:scale-95 group">
-                <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center mb-1 group-hover:scale-110 transition shadow-inner">
-                    <i class="fa-solid fa-images text-white text-xs"></i>
+            <button onclick="abrirSecaoTopo('fotos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-blue-500/90 via-indigo-600/90 to-blue-700/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-blue-200/50 transition transform active:scale-95 group">
+                <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
+                    <i class="fa-solid fa-images text-white text-[10px]"></i>
                 </div>
-                <span class="text-[9px] font-bold text-center leading-tight text-white drop-shadow">Fotos</span>
+                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Fotos</span>
             </button>
 
             <!-- 4. Vermelho -->
-            <button onclick="abrirSecaoTopo('audio')" class="flex flex-col items-center justify-center p-2 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
-                <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center mb-1 group-hover:scale-110 transition shadow-inner">
-                    <i class="fa-solid fa-volume-high text-white text-xs"></i>
+            <button onclick="abrirSecaoTopo('audio')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 hover:opacity-100 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
+                <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
+                    <i class="fa-solid fa-volume-high text-white text-[10px]"></i>
                 </div>
-                <span class="text-[9px] font-bold text-center leading-tight text-white drop-shadow">Mensagem áudio Flávio e Gisele</span>
+                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Áudio Pr./Mis.</span>
+            </button>
+
+            <!-- 5. Panfletos PDF (Branco Gradiente) -->
+            <button onclick="abrirSecaoTopo('panfletos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:to-gray-300 text-gray-900 rounded-xl shadow-lg border border-white transition transform active:scale-95 group">
+                <div class="w-6 h-6 bg-gray-900/10 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
+                    <i class="fa-solid fa-file-pdf text-red-700 text-[10px]"></i>
+                </div>
+                <span class="text-[8px] font-black text-center leading-tight text-gray-900 drop-shadow">Panfletos PDF</span>
             </button>
         </div>
 
@@ -456,7 +512,7 @@
                 <i class="fa-solid fa-hands-praying"></i>
             </div>
             <h2 class="text-base md:text-lg font-black text-amber-900 text-center mb-0.5">Mural de Oração & Testemunhos REAJ</h2>
-            <p class="text-center text-[10px] md:text-[11px] text-gray-600 mb-3">Peça oração ou compartilhe um milagre!</p>
+            <p class="text-center text-[10px] md:text-[11px] text-gray-600 mb-3">Peça oração ou compartilhe um milagre! (Validade de 7 dias por postagem)</p>
 
             <div class="grid grid-cols-2 gap-2 md:gap-3 items-start mb-3">
                 <div class="bg-amber-50/90 p-2.5 rounded-xl border border-amber-100 flex flex-col justify-between space-y-2 shadow-sm">
@@ -488,7 +544,7 @@
                     <div>
                         <h3 class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5 flex items-center justify-between">
                             <span><i class="fa-solid fa-list-check"></i> Quadro Vivo</span>
-                            <span class="text-[8px] text-amber-700 bg-amber-100 px-1 py-0.2 rounded-full font-semibold">Recentes</span>
+                            <span class="text-[8px] text-amber-700 bg-amber-100 px-1 py-0.2 rounded-full font-semibold">Expira em 7 dias</span>
                         </h3>
                         <div id="lista-pedidos" class="space-y-1.5 max-h-[30vh] overflow-y-auto pr-0.5"></div>
                     </div>
@@ -663,16 +719,57 @@
             }
         }
 
+        // Variável para gerenciar a instalação do aplicativo (PWA)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             carregarPedidos();
             atualizarContadorAcessos();
             history.replaceState({ tela: 'inicio' }, '');
+            // Abre o vídeo de boas-vindas automaticamente ao carregar o site
+            abrirModalSaudacao();
         });
+
+        function abrirModalSaudacao() {
+            const modal = document.getElementById('modal-saudacao');
+            const iframe = document.getElementById('iframe-saudacao');
+            iframe.src = "https://drive.google.com/file/d/1XiUt0mugk_eaHwtkhyffXLDRXlAloTtP/preview?autoplay=1";
+            modal.classList.remove('hidden');
+        }
+
+        function fecharModalSaudacao() {
+            const modal = document.getElementById('modal-saudacao');
+            const iframe = document.getElementById('iframe-saudacao');
+            iframe.src = "";
+            modal.classList.add('hidden');
+
+            // LOGICA PEDIDA: Assim que o usuário fecha o vídeo, dispara o convite para instalar o app
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    const instalarApp = confirm("Deseja instalar o atalho do Ministério REAJ direto na tela do seu celular como um aplicativo?");
+                    if (instalarApp) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('Usuário instalou o aplicativo');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                } else {
+                    // Caso o navegador já tenha o app instalado ou não suporte o prompt automático
+                    mostrarToast("✨ Dica: Você também pode adicionar este site à tela inicial pelas opções do navegador!");
+                }
+            }, 500);
+        }
 
         // Função para incrementar e buscar a contagem real de visitas
         function atualizarContadorAcessos() {
             const spanContador = document.getElementById('contador-visualizacoes');
-            // Namespace e Chave únicos para o site REAJ
             const apiURL = "https://api.countapi.xyz/hit/reaj-ministerio-oficial/acessos";
             
             fetch(apiURL)
@@ -689,7 +786,6 @@
                 });
         }
 
-        // Fallback local caso a API pública esteja indisponível no dispositivo
         function usarContadorLocal() {
             let vis = parseInt(localStorage.getItem('reaj_acessos_locais') || '1');
             localStorage.setItem('reaj_acessos_locais', vis + 1);
@@ -710,19 +806,20 @@
 
         function copiarPix() {
             const chavePix = "37.377.352/0001-70";
-            navigator.clipboard.writeText(chavePix).then(() => { mostrarToast(); }).catch(err => {
+            navigator.clipboard.writeText(chavePix).then(() => { mostrarToast("Chave Pix copiada com sucesso!"); }).catch(err => {
                 let aux = document.createElement("input");
                 aux.setAttribute("value", chavePix);
                 document.body.appendChild(aux);
                 aux.select();
                 document.execCommand("copy");
                 document.body.removeChild(aux);
-                mostrarToast();
+                mostrarToast("Chave Pix copiada com sucesso!");
             });
         }
 
-        function mostrarToast() {
+        function mostrarToast(mensagem) {
             const toast = document.getElementById('toast-pix');
+            document.getElementById('toast-texto').innerText = mensagem;
             toast.classList.remove('opacity-0');
             setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
         }
@@ -843,7 +940,6 @@
                         <h3 class="font-black text-gray-900 text-sm mb-0.5">(R.I) Regulamento Interno da Igreja R.E.A.J</h3>
                         <p class="text-[9px] text-gray-600">CNPJ: 37.377.352/0001-70 | Rua Sebastião Basto n° 228, Neves, Ponta Grossa - PR</p>
                     </div>
-                    
                     <div class="space-y-2 text-[11px] text-gray-700 leading-relaxed pr-1">
                         <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
                             <h4 class="font-bold text-blue-900 text-xs mb-1">📖 Propósito e Membresia</h4>
@@ -851,71 +947,7 @@
                                 <li><strong>Propósito (Art. 1):</strong> Organizar e manter a boa conduta cristã com sinceridade e amor ao próximo (Mt 22:37-39).</li>
                                 <li><strong>Membros (Art. 2):</strong> Exige cumprimento da doutrina e testemunho diário (Mc 1:15).</li>
                                 <li><strong>Batismo (Art. 3):</strong> Para maiores de 12 anos conscientes, após 3 meses de análise pastoral.</li>
-                                <li><strong>Apresentação de Crianças (Art. 4):</strong> Consagração a Deus em oração (Lc 2:21-22).</li>
                                 <li><strong>Casamento (Art. 5):</strong> Não é permitido segundo casamento, exceto para viúvos segundo a Palavra.</li>
-                                <li><strong>Novos Membros (Art. 28 & 45):</strong> 90 dias em observação sem oportunidades e apresentação de documentos/ficha criminal.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-blue-900 text-xs mb-1">🔥 Vida Espiritual, Jejum e Oração</h4>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Jejum (Art. 6):</strong> Obrigatório mínimo 2 vezes por semana, estipulado pelo pastor.</li>
-                                <li><strong>Oração Pré-culto (Art. 7):</strong> 30 a 60 minutos de oração antes dos cultos e ensaios; pregadores devem orar antes do altar.</li>
-                                <li><strong>Santas Ceias (Art. 13 & 36):</strong> Participação obrigatória com carteirinha de membro e em comunhão (faltar 2 cultos sem justificativa impede de cear). Apenas hinos da Harpa Cristã (Art. 14).</li>
-                                <li><strong>Dias Comemorativos (Art. 20):</strong> Não guardamos sábados ou domingos como especiais; todos os dias são iguais para o Senhor.</li>
-                                <li><strong>Unção (Art. 21):</strong> Presbíteros podem ungir enfermos com azeite; proibido ungir casas, carros, chaves ou fotos.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-blue-900 text-xs mb-1">⛪ Ordem nos Cultos e Atividades</h4>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Assentos (Art. 8):</strong> Homens de um lado e mulheres do outro (ordem e decência - 1Co 14:40).</li>
-                                <li><strong>Pregadores e Visitantes (Art. 9 & 10):</strong> Apenas irmãos da mesma fé. Visitantes não ministram louvor/pregação (apenas leitura de versículos e testemunho).</li>
-                                <li><strong>Mulheres na Palavra (Art. 11 & 12):</strong> Proibido exercer autoridade sobre o cônjuge, mas permitido pregar em comunhão com a igreja.</li>
-                                <li><strong>Louvores (Art. 15):</strong> Exclusivamente Cristocêntricos (proibido ritmados ou que elevam a autoestima).</li>
-                                <li><strong>Comércio e Política (Art. 16 & 17):</strong> Proibida venda de materiais, bazares ou qualquer propaganda/campanha política no templo.</li>
-                                <li><strong>Tecnologia (Art. 18 & 25):</strong> Proibido filmar/fotografar sem permissão ou usar celular ligado. O ministério possui canal próprio no YouTube; membros não devem ter canais próprios.</li>
-                                <li><strong>Altar (Art. 59):</strong> Em cima do altar santo, somente a Palavra (sem uso de aparelhos celulares/eletrônicos).</li>
-                                <li><strong>Reverência (Art. 60):</strong> Proibido comer qualquer tipo de alimento dentro do templo.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-blue-900 text-xs mb-1">👗 Vestimenta, Corpo e Aparência</h4>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Corpo e Saúde (Art. 37, 61 & 62):</strong> Proibido cirurgias plásticas/estéticas (exceto saúde), tatuagens, detalhes na barba, depilação, unhas compridas e aparar pelos íntimos com objetos. Corpo natural e íntegro.</li>
-                                <li><strong>Cabelo (Art. 38):</strong> Mulheres: proibido pintar, alisar, escova, chapinha, babyliss, tranças ou cortar (cabelo é o véu). Homens: proibido desenhos, bigode, cavanhaque, cabelos compridos ou pintura.</li>
-                                <li><strong>Vestimentas Femininas (Art. 39):</strong> Saia longa até o tornozelo e blusa até o punho (ou vestido longo). Proibido salto acima de 4 cm, saia rachada/jeans, roupas coladas, transparentes, decotes, calças ou shorts.</li>
-                                <li><strong>Vestimentas Masculinas (Art. 39):</strong> Camisa social de manga longa e calça social em tempo integral. Proibido regata, bermuda, calça jeans, moletom (exceto por baixo ou para dormir).</li>
-                                <li><strong>Acessórios e Maquiagem (Art. 40):</strong> Proibido brincos, pulseiras, joias, piercings, correntes, batom, maquiagem, esmaltes, tiaras, unhas postiças e apliques.</li>
-                                <li><strong>Perfumes (Art. 42):</strong> Proibidos perfumes fortes que atraiam atenção; permitidos apenas suaves para higiene.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-blue-900 text-xs mb-1">❤️ Família, Relacionamentos e Conduta</h4>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Métodos Anticoncepcionais (Art. 23):</strong> Proibido o uso de pílulas, DIU, camisinha, vasectomia, laqueadura, etc. Casos de controle devem ser por consentimento mútuo, jejum, oração ou método natural (tabelinha).</li>
-                                <li><strong>Leito Matrimonial (Art. 24):</strong> Proibido sexo oral, anal, posições fornicárias, uso de sex-shop ou filmes eróticos.</li>
-                                <li><strong>Namoro e Jovens (Art. 35):</strong> Rapazes a partir de 18 anos e moças a partir de 16 anos. Encontros apenas na presença de adultos; proibido pernoitar na casa de outros. Intimidade antes do casamento gera disciplina.</li>
-                                <li><strong>Contendas e Fofocas (Art. 27, 29 & 51):</strong> Proibido falar mal, fofoca, mentira, calúnia ou discussões entre casais/irmãos. Praticar fofoca gera disciplina de 6 meses.</li>
-                                <li><strong>Panelinhas e Indiretas (Art. 50 & 53):</strong> Extremamente proibido formar "panelinhas" excludentes ou dar indiretas na pregação, Facebook ou status.</li>
-                                <li><strong>Abandono de Cônjuge (Art. 49):</strong> Membros abandonados que permanecem na fé e fora do adultério podem servir ao Senhor.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-blue-900 text-xs mb-1">🚫 Proibições Gerais e Orientações</h4>
-                            <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Divertimentos e Jogos (Art. 31):</strong> Proibido TV, loteria, jogos de celular, videogame, baralho, sinuca, bingo, etc.</li>
-                                <li><strong>Idolatria (Art. 32):</strong> Proibido idolatrar times de futebol, cantores, pregadores, carros, casas, animais ou pessoas.</li>
-                                <li><strong>Alimentação e Bebidas (Art. 33 & 34):</strong> Proibido bebidas alcoólicas (incluindo cerveja sem álcool), cigarro, drogas, alimentos sacrificados a ídolos, sangue ou animais sufocados.</li>
-                                <li><strong>Redes Sociais (Art. 56):</strong> Proibido curtir fotos de ímpios em baladas ou conteúdos sensuais.</li>
-                                <li><strong>Revelações e Sonhos (Art. 55):</strong> Proibido espalhar revelações de sonhos/visões; deve-se relatar primeiro ao pastor.</li>
-                                <li><strong>Saída do Ministério (Art. 26 & 58):</strong> Quem sai rebelado não pode voltar. Deve-se sair em paz e pela porta da frente com autorização do pastor. Sair sem justificativa do grupo principal desliga da ceia (Art. 63).</li>
-                                <li><strong>Viagens e Visitas (Art. 52 & 57):</strong> Viagens e visitas a outros ministérios devem ser comunicadas antecipadamente ao pastor.</li>
                             </ul>
                         </div>
                     </div>
@@ -946,36 +978,15 @@
                         <p class="text-[9px] text-gray-600">Toque em qualquer foto para ampliar</p>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[35vh] overflow-y-auto pr-1">
-                        <div onclick="abrirModalFoto('1.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="1.jpg" alt="Foto 1" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('2.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="2.png" alt="Foto 2" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('3.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="3.png" alt="Foto 3" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('4.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="4.jpg" alt="Foto 4" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('5.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="5.png" alt="Foto 5" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('6.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="6.jpg" alt="Foto 6" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('7.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="7.jpg" alt="Foto 7" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('8.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="8.jpg" alt="Foto 8" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('9.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="9.jpg" alt="Foto 9" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
-                        <div onclick="abrirModalFoto('10.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center">
-                            <img src="10.jpg" alt="Foto 10" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        </div>
+                        <div onclick="abrirModalFoto('1.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="1.jpg" alt="Foto 1" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('2.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="2.png" alt="Foto 2" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('3.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="3.png" alt="Foto 3" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('4.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="4.jpg" alt="Foto 4" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('5.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="5.png" alt="Foto 5" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('6.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="6.jpg" alt="Foto 6" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('7.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="7.jpg" alt="Foto 7" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('8.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="8.jpg" alt="Foto 8" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('10.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="10.jpg" alt="Foto 10" class="w-full h-full object-cover"></div>
                     </div>
                 `;
             } else if(tipo === 'audio') {
@@ -984,6 +995,33 @@
                     <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-center text-[11px] text-gray-700 space-y-2">
                         <p>🎧 <strong>Pastor Flávio e Missionária Gisele</strong></p>
                         <p class="italic">"Ouça a palavra de fé e direcionamento espiritual para a sua vida hoje."</p>
+                    </div>
+                `;
+            } else if(tipo === 'panfletos') {
+                container.innerHTML = `
+                    <div class="text-center mb-2">
+                        <h3 class="font-black text-gray-900 text-sm mb-0.5">📄 Panfletos de Evangelismo (PDF)</h3>
+                        <p class="text-[9px] text-gray-600">Baixe nossos materiais e compartilhe a Palavra:</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 max-h-[35vh] overflow-y-auto pr-1">
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 01</p><div class="flex gap-1 justify-center"><a href="1.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="1.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 02</p><div class="flex gap-1 justify-center"><a href="2.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="2.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 03</p><div class="flex gap-1 justify-center"><a href="3.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="3.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 04</p><div class="flex gap-1 justify-center"><a href="4.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="4.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 05</p><div class="flex gap-1 justify-center"><a href="5.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="5.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 06</p><div class="flex gap-1 justify-center"><a href="6.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="6.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 07</p><div class="flex gap-1 justify-center"><a href="7.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="7.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 08</p><div class="flex gap-1 justify-center"><a href="8.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="8.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 09</p><div class="flex gap-1 justify-center"><a href="9.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="9.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 10</p><div class="flex gap-1 justify-center"><a href="10.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="10.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 11</p><div class="flex gap-1 justify-center"><a href="11.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="11.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 12</p><div class="flex gap-1 justify-center"><a href="12.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="12.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 13</p><div class="flex gap-1 justify-center"><a href="13.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="13.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 14</p><div class="flex gap-1 justify-center"><a href="14.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="14.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 15</p><div class="flex gap-1 justify-center"><a href="15.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="15.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 16</p><div class="flex gap-1 justify-center"><a href="16.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="16.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 17</p><div class="flex gap-1 justify-center"><a href="17.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="17.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl p-2 text-center"><p class="text-[10px] font-bold text-white mb-1">Panfleto 18</p><div class="flex gap-1 justify-center"><a href="18.pdf" target="_blank" class="bg-gray-700 text-white px-2 py-1 text-[9px] rounded font-bold">Ver</a><a href="18.pdf" download class="bg-red-700 text-white px-2 py-1 text-[9px] rounded font-bold">Baixar</a></div></div>
                     </div>
                 `;
             }
@@ -1119,6 +1157,21 @@
             document.getElementById('card-subpagina').classList.add('hidden');
         }
 
+        function contemPalavraoOuImoralidade(texto) {
+            const termosProibidos = [
+                "merda", "porra", "caralho", "puta", "puto", "desgraça", "desgraçado", "cu", "fdp", "filho da puta", 
+                "corno", "viado", "bicha", "arrombado", "buceta", "cacete", "pinto", "piroca", "kct", "pqp",
+                "sexo", "porn", "porno", "pornografia", "orgia", "foder", "trepar", "gozar", "gostosa", "gostoso", 
+                "pelada", "pelado", "nude", "nudes", "erotico", "erótica", "prostituta", "prostituição", "boquete", "punheta",
+                "droga", "cocaína", "maconha", "trafico", "matar", "assassinar", "estupro", "roubar"
+            ];
+            const textoMinusculo = texto.toLowerCase();
+            return termosProibidos.some(termo => {
+                const regex = new RegExp(`\\b${termo}\\b`, 'i');
+                return regex.test(textoMinusculo) || textoMinusculo.includes(termo);
+            });
+        }
+
         function adicionarPedido() {
             const tipo = document.getElementById('input-tipo').value;
             const nome = document.getElementById('input-nome').value.trim();
@@ -1129,11 +1182,17 @@
                 return;
             }
 
+            if (contemPalavraoOuImoralidade(nome) || contemPalavraoOuImoralidade(pedido)) {
+                mostrarToast("⚠️ Sua mensagem contém termos inadequados ou contrários à santidade do mural e não foi publicada.");
+                return;
+            }
+
             const novoPedido = {
                 id: Date.now(),
                 tipo: tipo,
                 nome: nome,
                 pedido: pedido,
+                timestamp: Date.now(),
                 data: new Date().toLocaleDateString('pt-BR')
             };
 
@@ -1144,11 +1203,21 @@
             document.getElementById('input-nome').value = '';
             document.getElementById('input-pedido').value = '';
             carregarPedidos();
+            mostrarToast("✨ Publicado com sucesso! Válido por 7 dias.");
         }
 
         function carregarPedidos() {
             const listaContainer = document.getElementById('lista-pedidos');
-            const pedidos = JSON.parse(localStorage.getItem('reaj_pedidos_oracao') || '[]');
+            let pedidos = JSON.parse(localStorage.getItem('reaj_pedidos_oracao') || '[]');
+            const seteDiasMs = 7 * 24 * 60 * 60 * 1000;
+            const agora = Date.now();
+            
+            pedidos = pedidos.filter(item => {
+                const tempoItem = item.timestamp || item.id;
+                return (agora - tempoItem) < seteDiasMs;
+            });
+
+            localStorage.setItem('reaj_pedidos_oracao', JSON.stringify(pedidos));
 
             if(pedidos.length === 0) {
                 listaContainer.innerHTML = '<p class="text-center text-[10px] text-gray-500 italic py-2 bg-white/50 rounded-xl">Sem publicações recentes.</p>';
