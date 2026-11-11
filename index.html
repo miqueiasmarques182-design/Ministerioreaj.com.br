@@ -201,18 +201,10 @@
         <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
     </div>
 
-    <!-- MODAL DE SAUDAÇÃO COM BOTÃO SEMPRE DISPONÍVEL -->
+    <!-- MODAL DE SAUDAÇÃO COM BOTÃO ÚNICO (TEXTO + X EMBUTIDO) -->
     <div id="modal-saudacao" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3">
         <div class="bg-gray-900 border-2 border-yellow-400 w-full max-w-xl rounded-2xl p-4 shadow-2xl relative flex flex-col items-center">
             
-            <!-- Botão X no canto superior -->
-            <div class="absolute top-3 right-3 flex items-center gap-2 z-10">
-                <span class="text-[11px] text-yellow-300 font-bold bg-black/60 px-2 py-1 rounded-lg border border-yellow-400/40 animate-pulse">feche vídeo</span>
-                <button onclick="fecharModalSaudacao()" class="bg-red-700 hover:bg-red-800 text-white w-8 h-8 rounded-full font-bold flex items-center justify-center shadow transition text-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
             <!-- MENSAGEM SOLICITADA -->
             <div id="aviso-comunicado" class="w-full bg-yellow-400/20 border border-yellow-400/50 rounded-xl p-2 mb-2 text-center">
                 <p class="text-xs md:text-sm font-black text-yellow-300 animate-pulse">
@@ -229,9 +221,14 @@
                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/aRtdQB3CyUw?autoplay=1&mute=0&enablejsapi=1" title="Vídeo de Boas Vindas REAJ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
 
-            <!-- BOTÃO SOLICITADO ABAIXO DO VÍDEO -->
-            <button onclick="fecharModalSaudacao()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-700 text-gray-900 font-black rounded-xl shadow-2xl transition text-xs md:text-sm flex items-center justify-center gap-2 border-2 border-yellow-200 animate-float-big">
-                <i class="fa-solid fa-house text-gray-900"></i> Ir para página inicial
+            <!-- BOTÃO AMARELO COM TEXTO E O "X" EMBUTIDO -->
+            <button onclick="fecharModalSaudacao()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-700 text-gray-900 font-black rounded-xl shadow-2xl transition text-xs md:text-sm flex items-center justify-between border-2 border-yellow-200 animate-float-big">
+                <span class="flex items-center gap-2 mx-auto">
+                    <i class="fa-solid fa-house text-gray-900"></i> Ir para página inicial
+                </span>
+                <span class="w-7 h-7 bg-red-700 text-white rounded-full flex items-center justify-center shadow text-xs shrink-0">
+                    <i class="fa-solid fa-xmark"></i>
+                </span>
             </button>
         </div>
     </div>
