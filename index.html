@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ministério REAJ — Em Defesa do Evangelho</title>
 
-    <!-- Configuração de PWA (Aplicativo na Tela Inicial) -->
+    <!-- Configuração de PWA e SEO -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3c72">
-
-    <!-- Configurações para preview no WhatsApp e Redes Sociais (Open Graph) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ministerioreaj.com.br/">
     <meta property="og:title" content="Ministério REAJ — Em Defesa do Evangelho">
@@ -117,7 +115,7 @@
                 <span>Em Defesa do Evangelho</span>
             </div>
             
-            <!-- CONTADOR DE ACESSOS GLOBAL -->
+            <!-- CONTADOR DE ACESSOS GLOBAL (FIREBASE) -->
             <div class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-black/40 backdrop-blur-md rounded-lg border border-yellow-300/40 w-fit text-[10px] text-yellow-300 font-bold shadow">
                 <i class="fa-solid fa-eye text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40 animate-pulse text-[11px]" style="-webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                 <span id="contador-visualizacoes">Acessos: Carregando...</span>
@@ -151,7 +149,7 @@
 
     <!-- Alerta flutuante -->
     <div id="toast-pix" class="fixed top-3 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2 z-50">
-        <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
+        <i class="fa-solid fa-circle-check"></i> Chave Pix copiada com sucesso!
     </div>
 
     <!-- MODAL DE SAUDAÇÃO -->
@@ -190,7 +188,7 @@
             </div>
         </div>
 
-        <!-- 5 BOTÕES DO TOPO (Regulamento, Hierarquia, Fotos, Áudio, Panfletos) -->
+        <!-- 5 BOTÕES DO TOPO (Regulamento, Hierarquia, Fotos, Áudio Líderes, Panfletos PDF) -->
         <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
             <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
@@ -465,7 +463,14 @@
             <a href="https://www.facebook.com/61593770679581/" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#1877F2] text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center"><i class="fa-brands fa-facebook-f text-xs mb-0.5"></i><span>Facebook</span></a>
             <a href="https://www.instagram.com/flaviogiseleofc/" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center"><i class="fa-brands fa-instagram text-xs mb-0.5"></i><span>Instagram</span></a>
             <a href="https://m.youtube.com/@flavioegiseleresgatandoalmas" target="_blank" class="flex flex-col items-center justify-center py-1.5 px-1 bg-[#FF0000] text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center"><i class="fa-brands fa-youtube text-xs mb-0.5"></i><span>YouTube</span></a>
-            <a href="mailto:2020reaj@gmail.com" class="flex flex-col items-center justify-center py-1.5 px-1 bg-gray-800 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center"><i class="fa-solid fa-envelope text-yellow-300 text-xs mb-0.5"></i><span>Contato</span></a>
+            
+            <div class="flex flex-col items-center col-span-1">
+                <a href="mailto:2020reaj@gmail.com?subject=Fale%20conosco%20-%20Deixe%20o%20motivo%20do%20contato" class="w-full flex flex-col items-center justify-center py-1.5 px-1 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded-xl shadow-lg border border-white/30 transition text-[9px] text-center leading-tight">
+                    <i class="fa-solid fa-envelope text-yellow-300 text-xs mb-0.5"></i>
+                    <span>Contato</span>
+                </a>
+                <span class="text-[7.5px] text-white/80 text-center mt-0.5 leading-tight">motivo no assunto</span>
+            </div>
         </div>
     </main>
 
@@ -524,12 +529,6 @@
             }
         }
 
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
         document.addEventListener("DOMContentLoaded", () => {
             carregarPedidosEmTempoReal();
             atualizarContadorNuvem();
@@ -537,23 +536,24 @@
             abrirModalSaudacao();
         });
 
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.tela) {
+                irParaTelaHistorico(event.state.tela);
+            } else {
+                reiniciar(false);
+            }
+        });
+
+        function mudarTelaComHistorico(nomeTela) {
+            history.pushState({ tela: nomeTela }, '', '#' + nomeTela);
+        }
+
         function abrirModalSaudacao() {
             document.getElementById('modal-saudacao').classList.remove('hidden');
         }
 
         function fecharModalSaudacao() {
             document.getElementById('modal-saudacao').classList.add('hidden');
-            setTimeout(() => {
-                if (deferredPrompt) {
-                    const instalarApp = confirm("Deseja instalar o atalho do Ministério REAJ direto na tela do seu celular como um aplicativo?");
-                    if (instalarApp) {
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then(() => {
-                            deferredPrompt = null;
-                        });
-                    }
-                }
-            }, 400);
         }
 
         // CONTADOR DE ACESSOS GLOBAL VIA FIREBASE
@@ -597,58 +597,66 @@
             if(iframeYoutube) iframeYoutube.src = "";
         }
 
-        function responder(opcao) {
+        function responder(opcao, registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             if(opcao === 'sim') {
                 document.getElementById('corpo-pagina').className = "luz-bg h-screen relative font-sans text-gray-800 flex flex-col justify-between select-none";
                 document.getElementById('card-sim').classList.remove('hidden');
+                if(registrarHistorico) mudarTelaComHistorico('sim');
             } else {
                 document.getElementById('corpo-pagina').className = "fogo-bg h-screen relative font-sans text-gray-800 flex flex-col justify-between select-none";
                 document.getElementById('card-nao').classList.remove('hidden');
+                if(registrarHistorico) mudarTelaComHistorico('nao');
             }
         }
 
-        function abrirTiposPecados() {
+        function abrirTiposPecados(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('card-tipos-pecados').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('tipos-pecados');
         }
 
-        function mostrarQuemEJesus() {
+        function mostrarQuemEJesus(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('card-quem-e-jesus').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('quem-e-jesus');
         }
 
-        function mostrarCaminhada() {
+        function mostrarCaminhada(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('card-caminhada').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('caminhada');
         }
 
-        function irParaOracao() {
+        function irParaOracao(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('card-oracao').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('oracao');
         }
 
-        function abrirMenuEscudo() {
+        function abrirMenuEscudo(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('card-menu-escudo').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('menu-escudo');
         }
 
-        function abrirGuerraEspiritual() {
+        function abrirGuerraEspiritual(registrarHistorico = true) {
             esconderTudo();
             const iframeOutdoor = document.getElementById('iframe-outdoor');
             if(iframeOutdoor) {
                 iframeOutdoor.src = "https://www.youtube.com/embed/FeE_nTrGj4Q?start=202&autoplay=1&mute=0";
             }
             document.getElementById('card-guerra-espiritual').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('guerra');
         }
 
-        function abrirVideoLibertacao(tipo) {
+        function abrirVideoLibertacao(tipo, registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             const iframe = document.getElementById('iframe-youtube');
@@ -665,9 +673,10 @@
                 if(iframe) iframe.src = "https://www.youtube.com/embed/RawPEngRigA?start=103&autoplay=1&mute=0";
             }
             document.getElementById('card-player-video').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('video-' + tipo);
         }
 
-        function abrirSecaoTopo(tipo) {
+        function abrirSecaoTopo(tipo, registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             const container = document.getElementById('conteudo-subpagina');
@@ -678,14 +687,66 @@
                         <h3 class="font-black text-gray-900 text-sm mb-0.5">(R.I) Regulamento Interno da Igreja R.E.A.J</h3>
                         <p class="text-[9px] text-gray-600">CNPJ: 37.377.352/0001-70 | Rua Sebastião Basto n° 228, Neves, Ponta Grossa - PR</p>
                     </div>
-                    <div class="space-y-2 text-[11px] text-gray-700 leading-relaxed pr-1">
+                    
+                    <div class="space-y-2 text-[11px] text-gray-700 leading-relaxed pr-1 max-h-[35vh] overflow-y-auto">
                         <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
                             <h4 class="font-bold text-blue-900 text-xs mb-1">📖 Propósito e Membresia</h4>
                             <ul class="list-disc pl-4 space-y-1">
                                 <li><strong>Propósito (Art. 1):</strong> Organizar e manter a boa conduta cristã com sinceridade e amor ao próximo (Mt 22:37-39).</li>
                                 <li><strong>Membros (Art. 2):</strong> Exige cumprimento da doutrina e testemunho diário (Mc 1:15).</li>
                                 <li><strong>Batismo (Art. 3):</strong> Para maiores de 12 anos conscientes, após 3 meses de análise pastoral.</li>
+                                <li><strong>Apresentação de Crianças (Art. 4):</strong> Consagração a Deus em oração (Lc 2:21-22).</li>
                                 <li><strong>Casamento (Art. 5):</strong> Não é permitido segundo casamento, exceto para viúvos segundo a Palavra.</li>
+                                <li><strong>Novos Membros (Art. 28 & 45):</strong> 90 dias em observação sem oportunidades e apresentação de documentos/ficha criminal.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-900 text-xs mb-1">🔥 Vida Espiritual, Jejum e Oração</h4>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong>Jejum (Art. 6):</strong> Obrigatório mínimo 2 vezes por semana, estipulado pelo pastor.</li>
+                                <li><strong>Oração Pré-culto (Art. 7):</strong> 30 a 60 minutos de oração antes dos cultos e ensaios; pregadores devem orar antes do altar.</li>
+                                <li><strong>Santas Ceias (Art. 13 & 36):</strong> Participação obrigatória com carteirinha de membro e em comunhão (faltar 2 cultos sem justificativa impede de cear). Apenas hinos da Harpa Cristã (Art. 14).</li>
+                                <li><strong>Dias Comemorativos (Art. 20):</strong> Não guardamos sábados ou domingos como especiais; todos os dias são iguais para o Senhor.</li>
+                                <li><strong>Unção (Art. 21):</strong> Presbíteros podem ungir enfermos com azeite; proibido ungir casas, carros, chaves ou fotos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-900 text-xs mb-1">⛪ Ordem nos Cultos e Atividades</h4>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong>Assentos (Art. 8):</strong> Homens de um lado e mulheres do outro (ordem e decência - 1Co 14:40).</li>
+                                <li><strong>Pregadores e Visitantes (Art. 9 & 10):</strong> Apenas irmãos da mesma fé. Visitantes não ministram louvor/pregação (apenas leitura de versículos e testemunho).</li>
+                                <li><strong>Mulheres na Palavra (Art. 11 & 12):</strong> Proibido exercer autoridade sobre o cônjuge, mas permitido pregar em comunhão com a igreja.</li>
+                                <li><strong>Louvores (Art. 15):</strong> Exclusivamente Cristocêntricos (proibido ritmados ou que elevam a autoestima).</li>
+                                <li><strong>Comércio e Política (Art. 16 & 17):</strong> Proibida venda de materiais, bazares ou qualquer propaganda/campanha política no templo.</li>
+                                <li><strong>Tecnologia (Art. 18 & 25):</strong> Proibido filmar/fotografar sem permissão ou usar celular ligado. O ministério possui canal próprio no YouTube; membros não devem ter canais próprios.</li>
+                                <li><strong>Altar (Art. 59):</strong> Em cima do altar santo, somente a Palavra (sem uso de aparelhos celulares/eletrônicos).</li>
+                                <li><strong>Reverência (Art. 60):</strong> Proibido comer qualquer tipo de alimento dentro do templo.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-900 text-xs mb-1">👗 Vestimenta, Corpo e Aparência</h4>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong>Corpo e Saúde (Art. 37, 61 & 62):</strong> Proibido cirurgias plásticas/estéticas (exceto saúde), tatuagens, detalhes na barba, depilação, unhas compridas e aparar pelos íntimos com objetos. Corpo natural e íntegro.</li>
+                                <li><strong>Cabelo (Art. 38):</strong> Mulheres: proibido pintar, alisar, escova, chapinha, babyliss, tranças ou cortar (cabelo é o véu). Homens: proibido desenhos, bigode, cavanhaque, cabelos compridos ou pintura.</li>
+                                <li><strong>Vestimentas Femininas (Art. 39):</strong> Saia longa até o tornozelo e blusa até o punho (ou vestido longo). Proibido salto acima de 4 cm, saia rachada/jeans, roupas coladas, transparentes, decotes, calças ou shorts.</li>
+                                <li><strong>Vestimentas Masculinas (Art. 39):</strong> Camisa social de manga longa e calça social em tempo integral. Proibido regata, bermuda, calça jeans, moletom (exceto por baixo ou para dormir).</li>
+                                <li><strong>Acessórios e Maquiagem (Art. 40):</strong> Proibido brincos, pulseiras, joias, piercings, correntes, batom, maquiagem, esmaltes, tiaras, unhas postiças e apliques.</li>
+                                <li><strong>Perfumes (Art. 42):</strong> Proibidos perfumes fortes que atraiam atenção; permitidos apenas suaves para higiene.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-900 text-xs mb-1">❤️ Família, Relacionamentos e Conduta</h4>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong>Métodos Anticoncepcionais (Art. 23):</strong> Proibido o uso de pílulas, DIU, camisinha, vasectomia, laqueadura, etc. Casos de controle devem ser por consentimento mútuo, jejum, oração ou método natural (tabelinha).</li>
+                                <li><strong>Leito Matrimonial (Art. 24):</strong> Proibido sexo oral, anal, posições fornicárias, uso de sex-shop ou filmes eróticos.</li>
+                                <li><strong>Namoro e Jovens (Art. 35):</strong> Rapazes a partir de 18 anos e moças a partir de 16 anos. Encontros apenas na presença de adultos; proibido pernoitar na casa de outros. Intimidade antes do casamento gera disciplina.</li>
+                                <li><strong>Contendas e Fofocas (Art. 27, 29 & 51):</strong> Proibido falar mal, fofoca, mentira, calúnia ou discussões entre casais/irmãos. Praticar fofoca gera disciplina de 6 meses.</li>
+                                <li><strong>Panelinhas e Indiretas (Art. 50 & 53):</strong> Extremamente proibido formar "panelinhas" excludentes ou dar indiretas na pregação, Facebook ou status.</li>
+                                <li><strong>Abandono de Cônjuge (Art. 49):</strong> Membros abandonados que permanecem na fé e fora do adultério podem servir ao Senhor.</li>
                             </ul>
                         </div>
                     </div>
@@ -721,6 +782,11 @@
                         <div onclick="abrirModalFoto('3.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="3.png" alt="Foto 3" class="w-full h-full object-cover"></div>
                         <div onclick="abrirModalFoto('4.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="4.jpg" alt="Foto 4" class="w-full h-full object-cover"></div>
                         <div onclick="abrirModalFoto('5.png')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="5.png" alt="Foto 5" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('6.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="6.jpg" alt="Foto 6" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('7.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="7.jpg" alt="Foto 7" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('8.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="8.jpg" alt="Foto 8" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('9.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="9.jpg" alt="Foto 9" class="w-full h-full object-cover"></div>
+                        <div onclick="abrirModalFoto('10.jpg')" class="aspect-video bg-black/10 rounded-xl overflow-hidden shadow border border-blue-200 cursor-pointer group flex items-center justify-center"><img src="10.jpg" alt="Foto 10" class="w-full h-full object-cover"></div>
                     </div>
                 `;
             } else if(tipo === 'audio') {
@@ -733,13 +799,33 @@
                 `;
             } else if(tipo === 'panfletos') {
                 container.innerHTML = `
-                    <div class="text-center"><h3 class="font-black text-gray-900 text-sm mb-1">Panfletos e Materiais PDF</h3></div>
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center text-[11px] text-gray-700 space-y-2">
-                        <p>📄 Baixe os panfletos oficiais do ministério para evangelismo.</p>
+                    <div class="text-center mb-2">
+                        <h3 class="font-black text-gray-900 text-sm mb-0.5">Panfletos e Materiais em PDF</h3>
+                        <p class="text-[9px] text-gray-600">Toque para visualizar ou baixar os panfletos evangelísticos</p>
+                    </div>
+                    <div class="space-y-2 max-h-[35vh] overflow-y-auto pr-1">
+                        <div class="bg-white p-2.5 rounded-xl border border-blue-200 flex items-center justify-between shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf text-red-600 text-lg"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 text-[11px]">Panfleto REAJ — Resgatando Almas</h4>
+                                    <p class="text-[9px] text-gray-500">Material oficial para evangelismo</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-1">
+                                <a href="panfleto.pdf" target="_blank" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-[10px] shadow flex items-center gap-1">
+                                    <i class="fa-solid fa-eye"></i> Ver
+                                </a>
+                                <a href="panfleto.pdf" download class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] shadow flex items-center gap-1">
+                                    <i class="fa-solid fa-download"></i> Baixar
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 `;
             }
             document.getElementById('card-subpagina').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('topo-' + tipo);
         }
 
         function abrirModalFoto(src) {
@@ -753,7 +839,7 @@
             document.getElementById('modal-foto').classList.add('hidden');
         }
 
-        function abrirSubPagina(tipo) {
+        function abrirSubPagina(tipo, registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             const container = document.getElementById('conteudo-subpagina');
@@ -761,6 +847,9 @@
             if(tipo === 'lideranca') {
                 container.innerHTML = `
                     <div class="text-center">
+                        <div class="w-28 h-20 mx-auto mb-1 rounded-xl overflow-hidden shadow-md border-2 border-amber-400 bg-black/30 flex items-center justify-center p-1">
+                            <img src="logo5.png" alt="Pastor Flávio e Missionária Gisele" class="w-full h-full object-contain">
+                        </div>
                         <h3 class="font-black text-gray-900 text-xs mb-0.5">Pastor Presidente Flávio e Missionária Gisele</h3>
                         <p class="text-[9px] text-amber-700 font-bold uppercase tracking-wider mb-2">Canal Resgatando Almas Para Jesus</p>
                     </div>
@@ -794,13 +883,31 @@
                 `;
             }
             document.getElementById('card-subpagina').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('sub-' + tipo);
         }
 
-        function reiniciar() {
+        function irParaTelaHistorico(nomeTela) {
+            if(nomeTela === 'inicio') reiniciar(false);
+            else if(nomeTela === 'sim') responder('sim', false);
+            else if(nomeTela === 'nao') responder('nao', false);
+            else if(nomeTela === 'tipos-pecados') abrirTiposPecados(false);
+            else if(nomeTela === 'quem-e-jesus') mostrarQuemEJesus(false);
+            else if(nomeTela === 'caminhada') mostrarCaminhada(false);
+            else if(nomeTela === 'oracao') irParaOracao(false);
+            else if(nomeTela === 'menu-escudo') abrirMenuEscudo(false);
+            else if(nomeTela === 'guerra') abrirGuerraEspiritual(false);
+            else if(nomeTela.startsWith('video-')) abrirVideoLibertacao(nomeTela.replace('video-', ''), false);
+            else if(nomeTela.startsWith('topo-')) abrirSecaoTopo(nomeTela.replace('topo-', ''), false);
+            else if(nomeTela.startsWith('sub-')) abrirSubPagina(nomeTela.replace('sub-', ''), false);
+            else reiniciar(false);
+        }
+
+        function reiniciar(registrarHistorico = true) {
             esconderTudo();
             pararVideos();
             document.getElementById('corpo-pagina').className = "sky-bg h-screen relative font-sans text-gray-800 flex flex-col justify-between select-none";
             document.getElementById('card-pergunta').classList.remove('hidden');
+            if(registrarHistorico) mudarTelaComHistorico('inicio');
         }
 
         function esconderTudo() {
@@ -809,7 +916,6 @@
             });
         }
 
-        // FILTRO REFORÇADO DE PALAVRÕES E XINGAMENTOS
         function contemPalavraoOuImoralidade(texto) {
             const termosProibidos = [
                 "merda", "porra", "caralho", "puta", "puto", "desgraça", "desgracado", 
@@ -858,6 +964,7 @@
 
         function carregarPedidosEmTempoReal() {
             const listaContainer = document.getElementById('lista-pedidos');
+            if(!listaContainer) return;
 
             db.collection("pedidos_reaj")
               .orderBy("criadoEm", "desc")
