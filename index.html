@@ -139,12 +139,6 @@
                         <span class="text-[8px] uppercase tracking-wider">Corinhos</span>
                     </button>
                 </div>
-                <div class="flex items-center gap-1 bg-red-800/80 backdrop-blur-md px-2 py-0.5 rounded-full border border-red-300/50 shadow">
-                    <button onclick="abrirModalSaudacao()" class="text-white hover:text-yellow-300 transition text-xs flex items-center gap-1 font-bold" title="Vídeo de Boas-Vindas">
-                        <i class="fa-solid fa-video text-[10px] text-yellow-300"></i>
-                        <span class="text-[8px] uppercase tracking-wider">Vídeo de Boas-Vindas</span>
-                    </button>
-                </div>
             </div>
         </div>
     </header>
@@ -154,16 +148,21 @@
         <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
     </div>
 
-    <!-- MODAL DE SAUDAÇÃO COM BOTÃO ÚNICO -->
+    <!-- MODAL DE SAUDAÇÃO COM BOTÃO DE FECHAR (X) JÁ NO TOPO -->
     <div id="modal-saudacao" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3">
         <div class="bg-gray-900 border-2 border-yellow-400 w-full max-w-xl rounded-2xl p-4 shadow-2xl relative flex flex-col items-center">
-            <div id="aviso-comunicado" class="w-full bg-yellow-400/20 border border-yellow-400/50 rounded-xl p-2 mb-2 text-center">
+            <!-- Botão X de Fechar visível logo no topo -->
+            <button onclick="fecharModalSaudacao()" class="absolute top-3 right-3 w-8 h-8 bg-red-700 hover:bg-red-800 text-white rounded-full flex items-center justify-center shadow-lg text-sm z-20 transition transform active:scale-95" title="Fechar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="aviso-comunicado" class="w-full bg-yellow-400/20 border border-yellow-400/50 rounded-xl p-2 mb-2 text-center pr-10">
                 <p class="text-xs md:text-sm font-black text-yellow-300 animate-pulse">
                     <i class="fa-solid fa-bullhorn mr-1"></i> Aguarde... Temos um comunicado e boas vindas!
                 </p>
             </div>
             <h2 class="text-xs md:text-sm font-bold text-gray-300 mb-2 text-center flex items-center gap-1.5">
-                <i class="fa-solid fa-dove text-yellow-400"></i> Ministério REAJ — Assista ou prossiga abaixo
+                <i class="fa-solid fa-dove text-yellow-400"></i> Ministério REAJ — Vídeo de Boas-Vindas
             </h2>
             <div class="relative w-full aspect-[9/16] max-h-[50vh] rounded-xl overflow-hidden shadow-2xl bg-black border border-yellow-500/50 mb-3 flex items-center justify-center">
                 <iframe class="w-full h-full" src="https://www.youtube.com/embed/aRtdQB3CyUw?autoplay=1&mute=0&enablejsapi=1" title="Vídeo de Boas Vindas REAJ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -190,6 +189,7 @@
             </div>
         </div>
 
+        <!-- 5 BOTÕES DO TOPO (COM VÍDEOS DE BOAS-VINDAS NO LUGAR DO ÁUDIO) -->
         <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
             <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
@@ -209,11 +209,11 @@
                 </div>
                 <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Fotos</span>
             </button>
-            <button onclick="abrirSecaoTopo('audio')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
+            <button onclick="abrirModalSaudacao()" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-red-500/90 via-rose-600/90 to-red-800/90 text-white rounded-xl shadow-lg border border-red-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
-                    <i class="fa-solid fa-volume-high text-white text-[10px]"></i>
+                    <i class="fa-solid fa-video text-white text-[10px]"></i>
                 </div>
-                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Áudio Pr./Mis.</span>
+                <span class="text-[8px] font-bold text-center leading-tight text-white drop-shadow">Vídeos Boas-Vindas</span>
             </button>
             <button onclick="abrirSecaoTopo('panfletos')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:to-gray-300 text-gray-900 rounded-xl shadow-lg border border-white transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-gray-900/10 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
@@ -505,7 +505,6 @@
                 "sexo", "porn", "porno", "droga", "trafico", "otario", "idiota", "imbecil"
             ];
             
-            // Remove acentos e converte para minúsculas para pegar variações
             const textoNorm = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
             return termosProibidos.some(termo => {
@@ -514,7 +513,7 @@
             });
         }
 
-        // ADICIONAR PEDIDO DIRETO NA NUVEM (FIREBASE)
+        // ADICIONAR PEDIDO DIRETO NA NUVEM (COM RESPOSTA INSTANTÂNEA)
         function adicionarPedido() {
             const tipo = document.getElementById('input-tipo').value;
             const nome = document.getElementById('input-nome').value.trim();
@@ -534,6 +533,7 @@
                 tipo: tipo,
                 nome: nome,
                 pedido: pedido,
+                criadoEm: Date.now(),
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 data: new Date().toLocaleDateString('pt-BR')
             }).then(() => {
@@ -546,14 +546,14 @@
             });
         }
 
-        // ESCUTAR MURAL EM TEMPO REAL (ATUALIZA NO CELULAR DE TODO MUNDO INSTANTANEAMENTE)
+        // ESCUTAR MURAL EM TEMPO REAL
         function carregarPedidosEmTempoReal() {
             const listaContainer = document.getElementById('lista-pedidos');
 
             db.collection("pedidos_reaj")
-              .orderBy("timestamp", "desc")
-              .limit(20)
-              .onSnapshot((snapshot) => {
+              .orderBy("criadoEm", "desc")
+              .limit(25)
+              .onSnapshot({ includeMetadataChanges: true }, (snapshot) => {
                   if (snapshot.empty) {
                       listaContainer.innerHTML = '<p class="text-center text-[10px] text-gray-500 italic py-2 bg-white/50 rounded-xl">Nenhum pedido recente.</p>';
                       return;
