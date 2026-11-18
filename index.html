@@ -149,7 +149,7 @@
 
     <!-- Alerta flutuante -->
     <div id="toast-pix" class="fixed top-3 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2 z-50">
-        <i class="fa-solid fa-circle-check"></i> Chave Pix copiada com sucesso!
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-texto">Chave Pix copiada com sucesso!</span>
     </div>
 
     <!-- MODAL DE SAUDAÇÃO -->
@@ -188,7 +188,7 @@
             </div>
         </div>
 
-        <!-- 5 BOTÕES DO TOPO (Regulamento, Hierarquia, Fotos, Áudio Líderes, Panfletos PDF) -->
+        <!-- 5 BOTÕES DO TOPO -->
         <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
             <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
@@ -754,20 +754,13 @@
             } else if(tipo === 'hierarquia') {
                 container.innerHTML = `
                     <div class="text-center"><h3 class="font-black text-gray-900 text-sm mb-2">Hierarquia do Ministério REAJ</h3></div>
-                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 space-y-1.5 text-[11px] text-gray-800 leading-relaxed font-semibold">
-                        <p>👑 1- PR Presidente = Flávio</p>
-                        <p>👑 2- Vice presidente = Gisele</p>
-                        <p>🔥 3- PR Nilton</p>
-                        <p>🔥 4- PR Elias</p>
-                        <p>⚡ 5- Evangelista Rudinei</p>
-                        <p>🛡️ 6- Presbitério Anderson</p>
-                        <p>🛡️ 7- Presbitério Mizael</p>
-                        <p>🕊️ 8- Diácono Bruno</p>
-                        <p>⚔️ 9- Obreiro Daniel</p>
-                        <p>⚔️ 10- Obreiro Wellinton</p>
-                        <p>⚔️ 11- Obreiro Robson</p>
-                        <p>⚔️ 12- Obreiro Rodrigo</p>
-                        <p>🧭 13- Conselheiro Lucas</p>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 space-y-1.5 text-[11px] text-gray-800 leading-relaxed font-semibold max-h-[35vh] overflow-y-auto">
+                        <p>👑 1- Presidente = Flávio</p>
+                        <p>👑 2- Vice-presidente = Gisele</p>
+                        <p>🛡️ 3- Presbítero = Anderson</p>
+                        <p>🕊️ 4- Diácono = Bruno</p>
+                        <p>⚡ 5- Evangelista = Rudinei</p>
+                        <p>⚔️ 6- Obreiros = Daniel, Wellinton, Robson, Rodrigo, Flávio e Gustavo</p>
                     </div>
                 `;
             } else if(tipo === 'fotos') {
