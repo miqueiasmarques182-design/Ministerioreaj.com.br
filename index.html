@@ -132,14 +132,6 @@
                 <img src="logo.png" alt="Logo REAJ" class="w-12 h-16 object-contain rounded-xl shadow-2xl border-2 border-yellow-300 animate-float bg-black/40 group-hover:scale-110 transition duration-300">
                 <span class="text-[8px] text-yellow-200 font-bold mt-0.5 bg-black/50 px-1.5 py-0.2 rounded-full shadow">Toque no escudo</span>
             </div>
-            <div class="mt-1 flex items-center gap-1">
-                <div class="flex items-center gap-1 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded-full border border-yellow-300/50 shadow">
-                    <button id="btn-audio-player" onclick="toggleCorinhos()" class="text-yellow-300 hover:text-white transition text-xs flex items-center gap-1 font-bold" title="Tocar corinhos de fogo">
-                        <i id="icone-audio-player" class="fa-solid fa-play text-[10px]"></i>
-                        <span class="text-[8px] uppercase tracking-wider">Corinhos</span>
-                    </button>
-                </div>
-            </div>
         </div>
     </header>
 
@@ -189,7 +181,7 @@
             </div>
         </div>
 
-        <!-- 5 BOTÕES DO TOPO (COM VÍDEOS DE BOAS-VINDAS NO LUGAR DO ÁUDIO) -->
+        <!-- 5 BOTÕES DO TOPO -->
         <div class="w-full max-w-md grid grid-cols-5 gap-1.5 shrink-0">
             <button onclick="abrirSecaoTopo('regulamento')" class="flex flex-col items-center justify-center p-1.5 bg-gradient-to-br from-amber-400/90 via-yellow-500/90 to-amber-600/90 text-white rounded-xl shadow-lg border border-yellow-200/50 transition transform active:scale-95 group">
                 <div class="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center mb-0.5 group-hover:scale-110 transition shadow-inner">
@@ -290,13 +282,13 @@
             </div>
         </div>
 
-        <!-- MURAL DE ORAÇÃO EM TEMPO REAL (FIREBASE) -->
+        <!-- MURAL DE ORAÇÃO EM TEMPO REAL (FIREBASE COM LIMPEZA AUTOMÁTICA DE 7 DIAS) -->
         <div id="card-oracao" class="hidden glass-card w-full max-w-4xl rounded-2xl p-3 md:p-5 shadow-2xl border border-amber-200">
             <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-1 text-lg shadow-inner">
                 <i class="fa-solid fa-hands-praying"></i>
             </div>
             <h2 class="text-base md:text-lg font-black text-amber-900 text-center mb-0.5">Mural de Oração & Testemunhos REAJ</h2>
-            <p class="text-center text-[10px] text-gray-600 mb-3">Sincronizado simultaneamente em nuvem</p>
+            <p class="text-center text-[10px] text-gray-600 mb-3">Sincronizado na nuvem (limpeza automática de antigos a cada 7 dias)</p>
             <div class="grid grid-cols-2 gap-2 md:gap-3 items-start mb-3">
                 <div class="bg-amber-50/90 p-2.5 rounded-xl border border-amber-100 flex flex-col justify-between space-y-2">
                     <div>
@@ -347,8 +339,6 @@
         REAJ — A Serviço do Rei
     </footer>
 
-    <div id="container-player-secreto" class="hidden"><iframe id="iframe-corinhos" src="" allow="autoplay"></iframe></div>
-
     <script>
         // ================= CONFIGURAÇÃO DO FIREBASE (MINISTERIOREAJ) =================
         const firebaseConfig = {
@@ -363,31 +353,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         // ============================================================================
-
-        const listaCorinhos = [
-            "https://www.youtube.com/embed/0jLq90ea3Mo?autoplay=1&enablejsapi=1",
-            "https://www.youtube.com/embed/wJdB3Je1_Pg?autoplay=1&enablejsapi=1"
-        ];
-        let indiceCorinhoAtual = 0;
-        let tocandoCorinhos = false;
-
-        function toggleCorinhos() {
-            const iframe = document.getElementById('iframe-corinhos');
-            const icone = document.getElementById('icone-audio-player');
-            const btn = document.getElementById('btn-audio-player');
-
-            if (!tocandoCorinhos) {
-                tocandoCorinhos = true;
-                iframe.src = listaCorinhos[indiceCorinhoAtual];
-                icone.className = "fa-solid fa-pause text-[10px] animate-pulse text-yellow-300";
-                btn.querySelector('span').innerText = "Tocando";
-            } else {
-                tocandoCorinhos = false;
-                iframe.src = "";
-                icone.className = "fa-solid fa-play text-[10px]";
-                btn.querySelector('span').innerText = "Corinhos";
-            }
-        }
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -513,7 +478,7 @@
             });
         }
 
-        // ADICIONAR PEDIDO DIRETO NA NUVEM (COM RESPOSTA INSTANTÂNEA)
+        // ADICIONAR PEDIDO NA NUVEM (COM RESPOSTA INSTANTÂNEA E MARCA DE 7 DIAS)
         function adicionarPedido() {
             const tipo = document.getElementById('input-tipo').value;
             const nome = document.getElementById('input-nome').value.trim();
@@ -529,11 +494,13 @@
                 return;
             }
 
+            const agora = Date.now();
             db.collection("pedidos_reaj").add({
                 tipo: tipo,
                 nome: nome,
                 pedido: pedido,
-                criadoEm: Date.now(),
+                criadoEm: agora,
+                expiraEm: agora + (7 * 24 * 60 * 60 * 1000), // Apaga automaticamente após 7 dias
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 data: new Date().toLocaleDateString('pt-BR')
             }).then(() => {
@@ -546,13 +513,14 @@
             });
         }
 
-        // ESCUTAR MURAL EM TEMPO REAL
+        // ESCUTAR MURAL EM TEMPO REAL (FILTRANDO ITENS COM MENOS DE 7 DIAS)
         function carregarPedidosEmTempoReal() {
             const listaContainer = document.getElementById('lista-pedidos');
+            const agora = Date.now();
 
             db.collection("pedidos_reaj")
               .orderBy("criadoEm", "desc")
-              .limit(25)
+              .limit(30)
               .onSnapshot({ includeMetadataChanges: true }, (snapshot) => {
                   if (snapshot.empty) {
                       listaContainer.innerHTML = '<p class="text-center text-[10px] text-gray-500 italic py-2 bg-white/50 rounded-xl">Nenhum pedido recente.</p>';
@@ -560,9 +528,19 @@
                   }
 
                   listaContainer.innerHTML = '';
+                  let contadorExibidos = 0;
+
                   snapshot.forEach((doc) => {
                       const item = doc.data();
                       const idDoc = doc.id;
+
+                      // Se passou de 7 dias (expiraEm), remove automaticamente da nuvem em segundo plano
+                      if (item.expiraEm && agora > item.expiraEm) {
+                          db.collection("pedidos_reaj").doc(idDoc).delete().catch(() => {});
+                          return; // Não exibe na tela
+                      }
+
+                      contadorExibidos++;
                       const isTestemunho = item.tipo === 'testemunho';
                       
                       const badgeTag = isTestemunho 
@@ -592,6 +570,10 @@
                       `;
                       listaContainer.appendChild(card);
                   });
+
+                  if (contadorExibidos === 0) {
+                      listaContainer.innerHTML = '<p class="text-center text-[10px] text-gray-500 italic py-2 bg-white/50 rounded-xl">Nenhum pedido recente.</p>';
+                  }
               });
         }
 
