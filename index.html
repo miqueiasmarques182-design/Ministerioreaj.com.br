@@ -496,10 +496,22 @@
             });
         }
 
+        // FILTRO REFORÇADO DE PALAVRÕES E XINGAMENTOS
         function contemPalavraoOuImoralidade(texto) {
-            const termosProibidos = ["merda", "porra", "caralho", "puta", "puto", "desgraça", "cu", "fdp", "corno", "viado", "sexo", "porn", "porno", "droga", "trafico"];
-            const textoMin = texto.toLowerCase();
-            return termosProibidos.some(termo => textoMin.includes(termo));
+            const termosProibidos = [
+                "merda", "porra", "caralho", "puta", "puto", "desgraça", "desgracado", 
+                "cu", "fdp", "corno", "viado", "bicha", "krl", "prr", "pqp", "cacete", 
+                "arrombado", "foder", "fodido", "filha da puta", "filho da puta", 
+                "sexo", "porn", "porno", "droga", "trafico", "otario", "idiota", "imbecil"
+            ];
+            
+            // Remove acentos e converte para minúsculas para pegar variações
+            const textoNorm = texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            return termosProibidos.some(termo => {
+                const termoNorm = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return textoNorm.includes(termoNorm);
+            });
         }
 
         // ADICIONAR PEDIDO DIRETO NA NUVEM (FIREBASE)
@@ -514,7 +526,7 @@
             }
 
             if (contemPalavraoOuImoralidade(nome) || contemPalavraoOuImoralidade(pedido)) {
-                mostrarToast("⚠️ Sua mensagem contém termos inadequados e não foi publicada.");
+                mostrarToast("⚠️ Termo inadequado detectado. Publicação bloqueada.");
                 return;
             }
 
